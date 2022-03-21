@@ -84,6 +84,7 @@ private void SomeMethod()
         // data = null if there is no data for this key
     });
 
+    // Set game data in storage
     InstantGamesBridge.game.SetData("key", "value", result =>
     {
         if (result)
