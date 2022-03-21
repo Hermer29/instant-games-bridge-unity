@@ -37,17 +37,17 @@ InstantGamesBridge.platform.id
 ```csharp
 private void SomeMethod()
 {
-	// Override minimum delay between interstitials. Default = 60 seconds.
+    // Override minimum delay between interstitials. Default = 60 seconds.
     var seconds = 30;
-	InstantGamesBridge.advertisement.SetMinimumDelayBetweenInterstitial(seconds);
+    InstantGamesBridge.advertisement.SetMinimumDelayBetweenInterstitial(seconds);
 
-	InstantGamesBridge.advertisement.interstitialStateChanged += state => { Debug.Log($"Interstitial state: {state}"); };
+    InstantGamesBridge.advertisement.interstitialStateChanged += state => { Debug.Log($"Interstitial state: {state}"); };
     InstantGamesBridge.advertisement.rewardedStateChanged += state => { Debug.Log($"Rewarded state: {state}"); };
 
-	// Optional parameter
-	var ignoreDelay = true; // Default = false
-	// Request to show interstitial ads
-	InstantGamesBridge.advertisement.ShowInterstitial(ignoreDelay, result =>
+    // Optional parameter
+    var ignoreDelay = true; // Default = false
+    // Request to show interstitial ads
+    InstantGamesBridge.advertisement.ShowInterstitial(ignoreDelay, result =>
     {
         if (result)
         {
@@ -59,8 +59,8 @@ private void SomeMethod()
         }
     });
 
-	// Request to show rewarded video ads
-	InstantGamesBridge.advertisement.ShowRewarded(result =>
+    // Request to show rewarded video ads
+    InstantGamesBridge.advertisement.ShowRewarded(result =>
     {
         if (result)
         {
@@ -77,14 +77,14 @@ private void SomeMethod()
 ```csharp
 private void SomeMethod()
 {
-	// Get game data from storage
-	InstantGamesBridge.game.GetData("key", data =>
+    // Get game data from storage
+    InstantGamesBridge.game.GetData("key", data =>
     {
         // Data has been received and you can work with them
         // data = null if there is no data for this key
     });
 
-	InstantGamesBridge.game.SetData("key", "value", result =>
+    InstantGamesBridge.game.SetData("key", "value", result =>
     {
         if (result)
         {
