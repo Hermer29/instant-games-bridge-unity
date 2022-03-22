@@ -44,7 +44,7 @@ namespace MewtonGames
                 InstantGamesBridge.advertisement.SetMinimumDelayBetweenInterstitial(5);
                 InstantGamesBridge.game.GetData(_coinsKey, OnGetGameDataCompleted);
 
-                Log("Platform ID: " + InstantGamesBridge.platform.id);
+                Log($"Platform ID: { InstantGamesBridge.platform.id }, language: { InstantGamesBridge.platform.language }, payload: { InstantGamesBridge.platform.payload }");
             }
         }
 
@@ -77,17 +77,17 @@ namespace MewtonGames
 
         private void OnShowInterstitialCompleted(bool result)
         {
-            Log("OnShowInterstitialCompleted, result: " + result);
+            Log($"OnShowInterstitialCompleted, result: { result }");
         }
 
         private void OnInterstitialStateChanged(InterstitialState state)
         {
-            Log("OnInterstitialStateChanged, state: " + state);
+            Log($"OnInterstitialStateChanged, state: { state }");
         }
 
         private void OnRewardedStateChanged(RewardedState state)
         {
-            Log("OnRewardedStateChanged, state: " + state);
+            Log($"OnRewardedStateChanged, state: { state }");
         }
 
         private void OnGetGameDataCompleted(string result)
@@ -95,7 +95,7 @@ namespace MewtonGames
             if (result != null)
             {
                 int.TryParse(result, out _coins);
-                Log("OnGetGameDataCompleted, coins: " + result);
+                Log($"OnGetGameDataCompleted, coins: { result }");
             }
             else
                 Log("OnGetGameDataCompleted, coins: null");
@@ -103,7 +103,7 @@ namespace MewtonGames
 
         private void OnSetGameDataCompleted(bool result)
         {
-            Log("OnSetGameDataCompleted, result: " + result);
+            Log($"OnSetGameDataCompleted, result: { result }");
         }
 
 

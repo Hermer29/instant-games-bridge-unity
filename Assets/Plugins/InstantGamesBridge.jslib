@@ -12,6 +12,22 @@ mergeInto(LibraryManager.library, {
         return buffer
     },
 
+    InstantGamesBridgeGetPlatformLanguage: function() {
+        var platformLanguage = window.getPlatformLanguage()
+        var bufferSize = lengthBytesUTF8(platformLanguage) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(platformLanguage, buffer, bufferSize)
+        return buffer
+    },
+
+    InstantGamesBridgeGetPlatformPayload: function() {
+        var platformPayload = window.getPlatformPayload()
+        var bufferSize = lengthBytesUTF8(platformPayload) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(platformPayload, buffer, bufferSize)
+        return buffer
+    },
+
     InstantGamesBridgeSetMinimumDelayBetweenInterstitial: function(seconds) {
         window.setMinimumDelayBetweenInterstitial(seconds)
     },

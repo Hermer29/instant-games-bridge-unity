@@ -66,6 +66,14 @@
                 return instantGamesBridge.platform.id
             }
 
+            window.getPlatformLanguage = function() {
+                return instantGamesBridge.platform.language
+            }
+
+            window.getPlatformPayload = function() {
+                return instantGamesBridge.platform.payload
+            }
+
             window.setMinimumDelayBetweenInterstitial = function(seconds) {
                 instantGamesBridge.advertisement.setMinimumDelayBetweenInterstitial(seconds)
             }
