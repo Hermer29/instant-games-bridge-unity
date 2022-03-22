@@ -8,7 +8,7 @@ namespace MewtonGames
 {
     public class InstantGamesBridge : Singleton<InstantGamesBridge>
     {
-        public const string version = "1.0.2";
+        public const string version = "1.1.0";
 
         public static bool isInitialized { get; private set; }
 
