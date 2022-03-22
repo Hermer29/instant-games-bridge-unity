@@ -29,8 +29,18 @@ private void Start()
 ```
 ### Platform
 ```csharp
-// Get ID of current platform ('vk', 'yandex', 'mock')
+// ID of current platform ('vk', 'yandex', 'mock')
 InstantGamesBridge.platform.id
+
+// If platform provides information - this is the user language on platform. 
+// If not - this is the language of the user's browser.
+InstantGamesBridge.platform.language
+
+// The value of the payload parameter from the url. Examples:
+// VK: vk.com/app8056947#your-info
+// Yandex: yandex.com/games/play/183100?payload=your-info
+// Mock: site.com/game?payload=your-info
+InstantGamesBridge.platform.payload
 ```
 
 ### Advertisement
