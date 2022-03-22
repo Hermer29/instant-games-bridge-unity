@@ -71,7 +71,11 @@
             }
 
             window.getPlatformPayload = function() {
-                return instantGamesBridge.platform.payload
+                let payload = instantGamesBridge.platform.payload
+                if (typeof payload === 'string')
+                    return payload
+                else
+                    return ''
             }
 
             window.setMinimumDelayBetweenInterstitial = function(seconds) {
