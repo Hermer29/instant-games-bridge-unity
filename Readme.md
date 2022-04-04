@@ -1,6 +1,7 @@
 # Instant Games Bridge
 Plugin of [InstantGamesBridge](https://github.com/mewtongames/instant-games-bridge) for Unity.
 
+Roadmap: https://trello.com/b/NjF29vTW.
 Join community: https://t.me/instant_games_bridge.
 
 ## Usage
