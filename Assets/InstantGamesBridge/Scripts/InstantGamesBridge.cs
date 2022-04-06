@@ -1,6 +1,7 @@
 #if UNITY_WEBGL
 using System;
 #if !UNITY_EDITOR
+using UnityEngine;
 using System.Runtime.InteropServices;
 #endif
 
@@ -8,8 +9,6 @@ namespace MewtonGames
 {
     public class InstantGamesBridge : Singleton<InstantGamesBridge>
     {
-        public const string version = "1.1.0";
-
         public static bool isInitialized { get; private set; }
 
         public static Advertisement advertisement { get; private set; }
@@ -18,9 +17,11 @@ namespace MewtonGames
 
         public static Platform platform { get; private set; }
 
+        public static Social social { get; private set; }
+
 #if !UNITY_EDITOR
         [DllImport("__Internal")]
-        private static extern void InstantGamesBridgeInitialize();
+        private static extern void InstantGamesBridgeInitialize(string settings);
 #endif
 
         private Action<bool> _initializationCallback;
@@ -36,7 +37,13 @@ namespace MewtonGames
 
             instance._initializationCallback = onComplete;
 #if !UNITY_EDITOR
-            InstantGamesBridgeInitialize();
+            var settings = Resources.Load<InstantGamesBridgeSettings>("InstantGamesBridgeSettings");
+            var settingsJson = string.Empty;
+
+            if (settings)
+                settingsJson = JsonUtility.ToJson(settings);
+
+            InstantGamesBridgeInitialize(settingsJson);
 #else
             instance.OnInitializationCompleted("true");
 #endif
@@ -53,6 +60,7 @@ namespace MewtonGames
                 advertisement = gameObject.AddComponent<Advertisement>();
                 game = gameObject.AddComponent<Game>();
                 platform = new Platform();
+                social = gameObject.AddComponent<Social>();
             }
 
             _initializationCallback?.Invoke(isInitialized);

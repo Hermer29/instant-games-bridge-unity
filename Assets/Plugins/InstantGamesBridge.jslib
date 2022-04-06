@@ -1,7 +1,7 @@
 mergeInto(LibraryManager.library, {
 
-    InstantGamesBridgeInitialize: function() {
-        window.initialize()
+    InstantGamesBridgeInitialize: function(settings) {
+        window.initialize(Pointer_stringify(settings))
     },
 
     InstantGamesBridgeGetPlatformId: function() {
@@ -46,6 +46,42 @@ mergeInto(LibraryManager.library, {
 
     InstantGamesBridgeSetGameData: function(key, value) {
         window.setGameData(Pointer_stringify(key), Pointer_stringify(value))
+    },
+
+    InstantGamesBridgeIsShareSupported: function() {
+        var isShareSupported = window.getIsShareSupported()
+        var bufferSize = lengthBytesUTF8(isShareSupported) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(isShareSupported, buffer, bufferSize)
+        return buffer
+    },
+
+    InstantGamesBridgeIsInviteFriendsSupported: function() {
+        var isInviteFriendsSupported = window.getIsInviteFriendsSupported()
+        var bufferSize = lengthBytesUTF8(isInviteFriendsSupported) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(isInviteFriendsSupported, buffer, bufferSize)
+        return buffer
+    },
+
+    InstantGamesBridgeIsCommunitySupported: function() {
+        var isCommunitySupported = window.getIsCommunitySupported()
+        var bufferSize = lengthBytesUTF8(isCommunitySupported) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(isCommunitySupported, buffer, bufferSize)
+        return buffer
+    },
+
+    InstantGamesBridgeShare: function() {
+        window.share()
+    },
+
+    InstantGamesBridgeInviteFriends: function() {
+        window.inviteFriends()
+    },
+
+    InstantGamesBridgeJoinCommunity: function() {
+        window.joinCommunity()
     }
 
 });

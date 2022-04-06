@@ -17,6 +17,12 @@ namespace MewtonGames
 
         [SerializeField] private Button _incrementCoinsButton;
 
+        [SerializeField] private Button _shareButton;
+
+        [SerializeField] private Button _inviteFriendsButton;
+
+        [SerializeField] private Button _joinCommunityButton;
+
         private const string _coinsKey = "coins";
 
         private int _coins;
@@ -37,6 +43,9 @@ namespace MewtonGames
                 _showInterstitialWithIgnoringDelayButton.onClick.AddListener(OnShowInterstitialWithIgnoringDelayButtonClicked);
                 _showRewardedButton.onClick.AddListener(OnShowRewardedButtonClicked);
                 _incrementCoinsButton.onClick.AddListener(OnIncrementCoinsButtonClicked);
+                _shareButton.onClick.AddListener(OnShareButtonClicked);
+                _inviteFriendsButton.onClick.AddListener(OnInviteFriendsButtonClicked);
+                _joinCommunityButton.onClick.AddListener(OnJoinCommunityButtonClicked);
 
                 InstantGamesBridge.advertisement.interstitialStateChanged += OnInterstitialStateChanged;
                 InstantGamesBridge.advertisement.rewardedStateChanged += OnRewardedStateChanged;
@@ -45,6 +54,7 @@ namespace MewtonGames
                 InstantGamesBridge.game.GetData(_coinsKey, OnGetGameDataCompleted);
 
                 Log($"Platform ID: { InstantGamesBridge.platform.id }, language: { InstantGamesBridge.platform.language }, payload: { InstantGamesBridge.platform.payload }");
+                Log($"Share supported: { InstantGamesBridge.social.isShareSupported }, invite friends supported: { InstantGamesBridge.social.isInviteFriendsSupported }, community supported: { InstantGamesBridge.social.isCommunitySupported }");
             }
         }
 
@@ -72,6 +82,24 @@ namespace MewtonGames
             _coins++;
             Log($"Increment Coins, coins: {_coins}");
             InstantGamesBridge.game.SetData(_coinsKey, _coins.ToString(), OnSetGameDataCompleted);
+        }
+
+        private void OnShareButtonClicked()
+        {
+            Log("Share");
+            InstantGamesBridge.social.Share(OnShareCompleted);
+        }
+
+        private void OnInviteFriendsButtonClicked()
+        {
+            Log("Invite Friends");
+            InstantGamesBridge.social.InviteFriends(OnInviteFriendsCompleted);
+        }
+
+        private void OnJoinCommunityButtonClicked()
+        {
+            Log("Join Community");
+            InstantGamesBridge.social.JoinCommunity(OnJoinCommunityCompleted);
         }
 
 
@@ -104,6 +132,21 @@ namespace MewtonGames
         private void OnSetGameDataCompleted(bool result)
         {
             Log($"OnSetGameDataCompleted, result: { result }");
+        }
+
+        private void OnShareCompleted(bool result)
+        {
+            Log($"OnShareCompleted, result: { result }");
+        }
+
+        private void OnInviteFriendsCompleted(bool result)
+        {
+            Log($"OnInviteFriendsCompleted, result: { result }");
+        }
+
+        private void OnJoinCommunityCompleted(bool result)
+        {
+            Log($"OnJoinCommunityCompleted, result: { result }");
         }
 
 

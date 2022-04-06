@@ -2,6 +2,7 @@
 Plugin of [InstantGamesBridge](https://github.com/mewtongames/instant-games-bridge) for Unity.
 
 Roadmap: https://trello.com/b/NjF29vTW.
+
 Join community: https://t.me/instant_games_bridge.
 
 ## Usage
@@ -9,8 +10,11 @@ Join community: https://t.me/instant_games_bridge.
 + [Platform](#platform)
 + [Advertisement](#advertisement)
 + [Game Data](#game-data)
++ [Social](#social)
 
 ### Setup
+Optional. Before call the "Initialize" method, if you want to use InstantGamesBridge.social.JoinCommunity() - you must fill the VK group id parameter in InstantGamesBridge/Resources/InstantGamesBridgeSettings file.
+
 First you need to initialize the SDK:
 ```csharp
 private void Start()
@@ -43,7 +47,6 @@ InstantGamesBridge.platform.language
 // Mock: site.com/game?payload=your-info
 InstantGamesBridge.platform.payload
 ```
-
 ### Advertisement
 ```csharp
 private void SomeMethod()
@@ -97,6 +100,54 @@ private void SomeMethod()
 
     // Set game data in storage
     InstantGamesBridge.game.SetData("key", "value", result =>
+    {
+        if (result)
+        {
+            // Success
+        }
+        else
+        {
+            // Error
+        }
+    });
+}
+```
+### Social
+```csharp
+private void SomeMethod()
+{
+    // VK: true
+    // Yandex, Mock: false
+    InstantGamesBridge.social.isShareSupported
+    InstantGamesBridge.social.isCommunitySupported
+    InstantGamesBridge.social.isInviteFriendsSupported
+
+    InstantGamesBridge.social.Share(result =>
+    {
+        if (result)
+        {
+            // Success
+        }
+        else
+        {
+            // Error
+        }
+    });
+
+    // For VK - you need to fill the group id in InstantGamesBridgeSettings
+    InstantGamesBridge.social.JoinCommunity(result =>
+    {
+        if (result)
+        {
+            // Success
+        }
+        else
+        {
+            // Error
+        }
+    });
+
+    InstantGamesBridge.social.InviteFriends(result =>
     {
         if (result)
         {
