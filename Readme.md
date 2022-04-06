@@ -6,15 +6,17 @@ Roadmap: https://trello.com/b/NjF29vTW.
 Join community: https://t.me/instant_games_bridge.
 
 ## Usage
++ [Before Setup](#before-setup)
 + [Setup](#setup)
 + [Platform](#platform)
 + [Advertisement](#advertisement)
 + [Game Data](#game-data)
 + [Social](#social)
 
-### Setup
-Optional. Before call the "Initialize" method, if you want to use InstantGamesBridge.social.JoinCommunity() - you must fill the VK group id parameter in InstantGamesBridge/Resources/InstantGamesBridgeSettings file.
+### Before Setup
+**Optional.** Before call the "Initialize" method, if you want to use InstantGamesBridge.social.JoinCommunity() - you must fill the VK group id parameter in InstantGamesBridge/Resources/InstantGamesBridgeSettings file.
 
+### Setup
 First you need to initialize the SDK:
 ```csharp
 private void Start()
