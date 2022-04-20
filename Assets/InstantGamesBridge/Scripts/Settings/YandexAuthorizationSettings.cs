@@ -3,8 +3,8 @@
 namespace MewtonGames
 {
     [Serializable]
-    public class VkSettings
+    public class YandexAuthorizationSettings
     {
-        public int groupId;
+        public bool scopes;
     }
 }

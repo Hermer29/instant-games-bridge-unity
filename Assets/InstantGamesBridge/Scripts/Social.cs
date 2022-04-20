@@ -33,12 +33,48 @@ namespace MewtonGames
             }
         }
 
-        public bool isCommunitySupported
+        public bool isJoinCommunitySupported
         {
             get
             {
 #if !UNITY_EDITOR
-                return InstantGamesBridgeIsCommunitySupported() == "true";
+                return InstantGamesBridgeIsJoinCommunitySupported() == "true";
+#else
+                return false;
+#endif
+            }
+        }
+
+        public bool isCreatePostSupported
+        {
+            get
+            {
+#if !UNITY_EDITOR
+                return InstantGamesBridgeIsCreatePostSupported() == "true";
+#else
+                return false;
+#endif
+            }
+        }
+
+        public bool isAddToHomeScreenSupported
+        {
+            get
+            {
+#if !UNITY_EDITOR
+                return InstantGamesBridgeIsAddToHomeScreenSupported() == "true";
+#else
+                return false;
+#endif
+            }
+        }
+
+        public bool isAddToFavoritesSupported
+        {
+            get
+            {
+#if !UNITY_EDITOR
+                return InstantGamesBridgeIsAddToFavoritesSupported() == "true";
 #else
                 return false;
 #endif
@@ -53,7 +89,16 @@ namespace MewtonGames
         private static extern string InstantGamesBridgeIsInviteFriendsSupported();
 
         [DllImport("__Internal")]
-        private static extern string InstantGamesBridgeIsCommunitySupported();
+        private static extern string InstantGamesBridgeIsJoinCommunitySupported();
+
+        [DllImport("__Internal")]
+        private static extern string InstantGamesBridgeIsCreatePostSupported();
+
+        [DllImport("__Internal")]
+        private static extern string InstantGamesBridgeIsAddToHomeScreenSupported();
+
+        [DllImport("__Internal")]
+        private static extern string InstantGamesBridgeIsAddToFavoritesSupported();
 
         [DllImport("__Internal")]
         private static extern void InstantGamesBridgeShare();
@@ -63,6 +108,15 @@ namespace MewtonGames
 
         [DllImport("__Internal")]
         private static extern void InstantGamesBridgeJoinCommunity();
+
+        [DllImport("__Internal")]
+        private static extern void InstantGamesBridgeCreatePost(string text);
+
+        [DllImport("__Internal")]
+        private static extern void InstantGamesBridgeAddToHomeScreen();
+
+        [DllImport("__Internal")]
+        private static extern void InstantGamesBridgeAddToFavorites();
 #endif
 
         private Action<bool> _shareCallback;
@@ -70,6 +124,12 @@ namespace MewtonGames
         private Action<bool> _inviteFriendsCallback;
 
         private Action<bool> _joinCommunityCallback;
+
+        private Action<bool> _createPostCallback;
+
+        private Action<bool> _addToHomeScreenCallback;
+
+        private Action<bool> _addToFavoritesCallback;
 
 
         public void Share(Action<bool> onComplete = null)
@@ -102,6 +162,36 @@ namespace MewtonGames
 #endif
         }
 
+        public void CreatePost(string text, Action<bool> onComplete = null)
+        {
+            _createPostCallback = onComplete;
+#if !UNITY_EDITOR
+            InstantGamesBridgeCreatePost(text);
+#else
+            OnCreatePostCompleted("false");
+#endif
+        }
+
+        public void AddToHomeScreen(Action<bool> onComplete = null)
+        {
+            _addToHomeScreenCallback = onComplete;
+#if !UNITY_EDITOR
+            InstantGamesBridgeAddToHomeScreen();
+#else
+            OnAddToHomeScreenCompleted("false");
+#endif
+        }
+
+        public void AddToFavorites(Action<bool> onComplete = null)
+        {
+            _addToFavoritesCallback = onComplete;
+#if !UNITY_EDITOR
+            InstantGamesBridgeAddToFavorites();
+#else
+            OnAddToFavoritesCompleted("false");
+#endif
+        }
+
 
         // Called from JS
         private void OnShareCompleted(string result)
@@ -123,6 +213,27 @@ namespace MewtonGames
             var isSuccess = result == "true";
             _joinCommunityCallback?.Invoke(isSuccess);
             _joinCommunityCallback = null;
+        }
+
+        private void OnCreatePostCompleted(string result)
+        {
+            var isSuccess = result == "true";
+            _createPostCallback?.Invoke(isSuccess);
+            _createPostCallback = null;
+        }
+
+        private void OnAddToHomeScreenCompleted(string result)
+        {
+            var isSuccess = result == "true";
+            _addToHomeScreenCallback?.Invoke(isSuccess);
+            _addToHomeScreenCallback = null;
+        }
+
+        private void OnAddToFavoritesCompleted(string result)
+        {
+            var isSuccess = result == "true";
+            _addToFavoritesCallback?.Invoke(isSuccess);
+            _addToFavoritesCallback = null;
         }
     }
 }

@@ -17,7 +17,22 @@ namespace MewtonGames
 
         public RewardedState rewardedState { get; private set; }
 
+        public int minimumDelayBetweenInterstitial
+        {
+            get
+            {
 #if !UNITY_EDITOR
+                return InstantGamesBridgeMinimumDelayBetweenInterstitial();
+#else
+                return 60;
+#endif
+            }
+        }
+
+#if !UNITY_EDITOR
+        [DllImport("__Internal")]
+        private static extern int InstantGamesBridgeMinimumDelayBetweenInterstitial();
+
         [DllImport("__Internal")]
         private static extern void InstantGamesBridgeSetMinimumDelayBetweenInterstitial(int seconds);
 

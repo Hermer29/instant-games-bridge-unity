@@ -15,3 +15,17 @@ MonoBehaviour:
   platforms:
     vk:
       groupId: 199747461
+    yandex:
+      authorization:
+        scopes: 1
+    mock:
+      social:
+        simulateShare: 0
+        simulateInviteFriends: 0
+        simulateJoinCommunity: 0
+        simulateCreatePost: 0
+        simulateAddToHomeScreen: 0
+        simulateAddToFavorites: 0
+      advertisement:
+        simulateInterstitial: 0
+        simulateRewarded: 0

@@ -6,5 +6,9 @@ namespace MewtonGames
     public class PlatformsSettings
     {
         public VkSettings vk;
+
+        public YandexSettings yandex;
+
+        public MockSettings mock;
     }
 }

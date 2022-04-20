@@ -19,6 +19,8 @@ namespace MewtonGames
 
         public static Social social { get; private set; }
 
+        public static Player player { get; private set; }
+
 #if !UNITY_EDITOR
         [DllImport("__Internal")]
         private static extern void InstantGamesBridgeInitialize(string settings);
@@ -57,9 +59,10 @@ namespace MewtonGames
 
             if (isInitialized)
             {
-                advertisement = gameObject.AddComponent<Advertisement>();
-                game = gameObject.AddComponent<Game>();
                 platform = new Platform();
+                player = gameObject.AddComponent<Player>();
+                game = gameObject.AddComponent<Game>();
+                advertisement = gameObject.AddComponent<Advertisement>();
                 social = gameObject.AddComponent<Social>();
             }
 
