@@ -9,12 +9,13 @@ Join community: https://t.me/instant_games_bridge.
 + [Before Setup](#before-setup)
 + [Setup](#setup)
 + [Platform](#platform)
++ [Player](#player)
++ [Game](#game)
 + [Advertisement](#advertisement)
-+ [Game Data](#game-data)
 + [Social](#social)
 
 ### Before Setup
-**Optional.** Before call the "Initialize" method, if you want to use InstantGamesBridge.social.JoinCommunity() - you must fill the VK group id parameter in InstantGamesBridge/Resources/InstantGamesBridgeSettings file.
+**Optional.** Before call the "Initialize" method, you can change InstantGamesBridge/Resources/InstantGamesBridgeSettings file.
 
 ### Setup
 First you need to initialize the SDK:
@@ -49,11 +50,83 @@ InstantGamesBridge.platform.language
 // Mock: site.com/game?payload=your-info
 InstantGamesBridge.platform.payload
 ```
+
+### Player
+```csharp
+private void SomeMethod()
+{
+    InstantGamesBridge.player.isAuthorizationSupported
+
+    InstantGamesBridge.player.isAuthorized
+
+    // If player is authorized
+    InstantGamesBridge.player.id
+
+    // If player is authorized (Yandex: and allowed access to this information)
+    InstantGamesBridge.player.name
+    InstantGamesBridge.player.photos // List of player photos, sorted in order of increasing photo size
+
+    // If authorization is supported and player is not authorized
+    InstantGamesBridge.player.Authorize(result =>
+    {
+        if (result)
+        {
+            // Success
+        }
+        else
+        {
+            // Error
+        }
+    });
+}
+```
+
+### Game
+```csharp
+private void SomeMethod()
+{
+    // Get game data from storage
+    InstantGamesBridge.game.GetData("key", data =>
+    {
+        // Data has been received and you can work with them
+        // data = null if there is no data for this key
+    });
+
+    // Set game data in storage
+    InstantGamesBridge.game.SetData("key", "value", result =>
+    {
+        if (result)
+        {
+            // Success
+        }
+        else
+        {
+            // Error
+        }
+    });
+
+    // Delete game data from storage
+    InstantGamesBridge.game.DeleteData("key", result =>
+    {
+        if (result)
+        {
+            // Success
+        }
+        else
+        {
+            // Error
+        }
+    });
+}
+```
+
 ### Advertisement
 ```csharp
 private void SomeMethod()
 {
-    // Override minimum delay between interstitials. Default = 60 seconds.
+    InstantGamesBridge.advertisement.minimumDelayBetweenInterstitial // Default = 60 seconds
+
+    // You can override minimum delay
     var seconds = 30;
     InstantGamesBridge.advertisement.SetMinimumDelayBetweenInterstitial(seconds);
 
@@ -89,40 +162,21 @@ private void SomeMethod()
     });
 }
 ```
-### Game Data
-```csharp
-private void SomeMethod()
-{
-    // Get game data from storage
-    InstantGamesBridge.game.GetData("key", data =>
-    {
-        // Data has been received and you can work with them
-        // data = null if there is no data for this key
-    });
 
-    // Set game data in storage
-    InstantGamesBridge.game.SetData("key", "value", result =>
-    {
-        if (result)
-        {
-            // Success
-        }
-        else
-        {
-            // Error
-        }
-    });
-}
-```
 ### Social
 ```csharp
 private void SomeMethod()
 {
     // VK: true
-    // Yandex, Mock: false
+    // Yandex: false
     InstantGamesBridge.social.isShareSupported
     InstantGamesBridge.social.isCommunitySupported
     InstantGamesBridge.social.isInviteFriendsSupported
+    InstantGamesBridge.social.isCreatePostSupported
+    InstantGamesBridge.social.isAddToFavoritesSupported
+
+    // VK, Yandex: partial supported
+    InstantGamesBridge.social.isAddToHomeScreenSupported
 
     InstantGamesBridge.social.Share(result =>
     {
@@ -150,6 +204,42 @@ private void SomeMethod()
     });
 
     InstantGamesBridge.social.InviteFriends(result =>
+    {
+        if (result)
+        {
+            // Success
+        }
+        else
+        {
+            // Error
+        }
+    });
+
+    InstantGamesBridge.social.CreatePost(text, result =>
+    {
+        if (result)
+        {
+            // Success
+        }
+        else
+        {
+            // Error
+        }
+    });
+
+    InstantGamesBridge.social.AddToHomeScreen(result =>
+    {
+        if (result)
+        {
+            // Success
+        }
+        else
+        {
+            // Error
+        }
+    });
+
+    InstantGamesBridge.social.AddToFavorites(result =>
     {
         if (result)
         {
