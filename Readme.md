@@ -170,7 +170,7 @@ private void SomeMethod()
     // VK: true
     // Yandex: false
     InstantGamesBridge.social.isShareSupported
-    InstantGamesBridge.social.isCommunitySupported
+    InstantGamesBridge.social.isJoinCommunitySupported
     InstantGamesBridge.social.isInviteFriendsSupported
     InstantGamesBridge.social.isCreatePostSupported
     InstantGamesBridge.social.isAddToFavoritesSupported
