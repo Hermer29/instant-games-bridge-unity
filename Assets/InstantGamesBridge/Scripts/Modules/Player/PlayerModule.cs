@@ -135,6 +135,7 @@ namespace InstantGamesBridge.Modules.Player
         }
 
         // Unity's JsonUtility does only support objects as top level nodes
+        [Serializable]
         private class PhotosContainer
         {
             public List<string> photos;

@@ -229,6 +229,7 @@ namespace InstantGamesBridge.Modules.Leaderboard
 
 
         // Unity's JsonUtility does only support objects as top level nodes
+        [Serializable]
         private class EntriesContainer
         {
             public List<LeaderboardEntry> entries;

@@ -83,7 +83,7 @@ namespace Examples
         {
             _overlay.SetActive(true);
 
-            int.TryParse(_showNativePopupVkUserResult.text, out var score);
+            int.TryParse(_getSetScoreYandexScoreInput.text, out var score);
 
             Bridge.leaderboard.SetScore(
                 success => { _overlay.SetActive(false); },
@@ -93,6 +93,7 @@ namespace Examples
         private void OnGetScoreButtonClicked()
         {
             _overlay.SetActive(true);
+            _getSetScoreYandexScoreInput.text = string.Empty;
 
             Bridge.leaderboard.GetScore(
                 (success, score) =>

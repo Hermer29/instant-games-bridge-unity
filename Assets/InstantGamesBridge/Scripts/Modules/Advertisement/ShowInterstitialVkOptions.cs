@@ -1,5 +1,8 @@
-﻿namespace InstantGamesBridge.Modules.Advertisement
+﻿using System;
+
+namespace InstantGamesBridge.Modules.Advertisement
 {
+    [Serializable]
     public class ShowInterstitialVkOptions : ShowInterstitialPlatformDependedOptions
     {
         public ShowInterstitialVkOptions(bool ignoreDelay) : base(ignoreDelay)

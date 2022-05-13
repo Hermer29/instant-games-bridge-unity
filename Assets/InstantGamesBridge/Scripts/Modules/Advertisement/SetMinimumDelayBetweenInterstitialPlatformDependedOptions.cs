@@ -1,5 +1,8 @@
-﻿namespace InstantGamesBridge.Modules.Advertisement
+﻿using System;
+
+namespace InstantGamesBridge.Modules.Advertisement
 {
+    [Serializable]
     public abstract class SetMinimumDelayBetweenInterstitialPlatformDependedOptions : PlatformDependedOptionsBase
     {
         public int seconds;

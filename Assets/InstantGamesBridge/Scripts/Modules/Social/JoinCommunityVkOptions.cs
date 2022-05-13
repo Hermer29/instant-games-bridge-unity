@@ -1,5 +1,8 @@
-﻿namespace InstantGamesBridge.Modules.Social
+﻿using System;
+
+namespace InstantGamesBridge.Modules.Social
 {
+    [Serializable]
     public class JoinCommunityVkOptions : JoinCommunityPlatformDependedOptions
     {
         public int groupId;

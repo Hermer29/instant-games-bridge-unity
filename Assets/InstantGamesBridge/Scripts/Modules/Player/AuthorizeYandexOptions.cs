@@ -1,5 +1,8 @@
-﻿namespace InstantGamesBridge.Modules.Player
+﻿using System;
+
+namespace InstantGamesBridge.Modules.Player
 {
+    [Serializable]
     public class AuthorizeYandexOptions : AuthorizePlatformDependedOptions
     {
         public bool scopes;

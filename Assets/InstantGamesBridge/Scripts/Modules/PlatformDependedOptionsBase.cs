@@ -1,8 +1,10 @@
-﻿using InstantGamesBridge.Common;
+﻿using System;
+using InstantGamesBridge.Common;
 using UnityEngine;
 
 namespace InstantGamesBridge.Modules
 {
+    [Serializable]
     public abstract class PlatformDependedOptionsBase
     {
         protected OptionsTargetPlatform _targetPlatform;

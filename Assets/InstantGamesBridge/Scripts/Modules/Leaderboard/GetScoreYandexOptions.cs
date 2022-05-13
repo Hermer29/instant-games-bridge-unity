@@ -1,5 +1,8 @@
-﻿namespace InstantGamesBridge.Modules.Leaderboard
+﻿using System;
+
+namespace InstantGamesBridge.Modules.Leaderboard
 {
+    [Serializable]
     public class GetScoreYandexOptions : GetScorePlatformDependedOptions
     {
         public string leaderboardName;

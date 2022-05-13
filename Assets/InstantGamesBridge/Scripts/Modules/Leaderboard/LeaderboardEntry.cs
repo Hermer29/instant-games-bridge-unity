@@ -1,18 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace InstantGamesBridge.Modules.Leaderboard
 {
+    [Serializable]
     public class LeaderboardEntry
     {
-        public readonly string id;
+        public string id;
 
-        public readonly string name;
+        public string name;
 
-        public readonly List<string> photos;
+        public List<string> photos;
 
-        public readonly int score;
+        public int score;
 
-        public readonly int rank;
+        public int rank;
 
         public LeaderboardEntry(string id, string name, List<string> photos, int score, int rank)
         {
