@@ -1,0 +1,13 @@
+﻿namespace InstantGamesBridge.Modules.Social
+{
+    public class JoinCommunityVkOptions : JoinCommunityPlatformDependedOptions
+    {
+        public int groupId;
+
+        public JoinCommunityVkOptions(int groupId)
+        {
+            _targetPlatform = OptionsTargetPlatform.VK;
+            this.groupId = groupId;
+        }
+    }
+}

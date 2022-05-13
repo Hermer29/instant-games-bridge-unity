@@ -1,8 +1,9 @@
 mergeInto(LibraryManager.library, {
 
-    InstantGamesBridgeInitialize: function(settings) {
-        window.initialize(UTF8ToString(settings))
+    InstantGamesBridgeInitialize: function() {
+        window.initialize()
     },
+
 
     InstantGamesBridgeGetPlatformId: function() {
         var platformId = window.getPlatformId()
@@ -25,6 +26,15 @@ mergeInto(LibraryManager.library, {
         var bufferSize = lengthBytesUTF8(platformPayload) + 1
         var buffer = _malloc(bufferSize)
         stringToUTF8(platformPayload, buffer, bufferSize)
+        return buffer
+    },
+
+
+    InstantGamesBridgeGetDeviceType: function() {
+        var deviceType = window.getDeviceType()
+        var bufferSize = lengthBytesUTF8(deviceType) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(deviceType, buffer, bufferSize)
         return buffer
     },
 
@@ -69,8 +79,8 @@ mergeInto(LibraryManager.library, {
         return buffer
     },
 
-    InstantGamesBridgeAuthorizePlayer: function() {
-        window.authorizePlayer()
+    InstantGamesBridgeAuthorizePlayer: function(options) {
+        window.authorizePlayer(UTF8ToString(options))
     },
 
 
@@ -95,12 +105,12 @@ mergeInto(LibraryManager.library, {
         return buffer
     },
 
-    InstantGamesBridgeSetMinimumDelayBetweenInterstitial: function(seconds) {
-        window.setMinimumDelayBetweenInterstitial(seconds)
+    InstantGamesBridgeSetMinimumDelayBetweenInterstitial: function(options) {
+        window.setMinimumDelayBetweenInterstitial(UTF8ToString(options))
     },
 
-    InstantGamesBridgeShowInterstitial: function(ignoreDelay) {
-        window.showInterstitial(ignoreDelay)
+    InstantGamesBridgeShowInterstitial: function(options) {
+        window.showInterstitial(UTF8ToString(options))
     },
 
     InstantGamesBridgeShowRewarded: function() {
@@ -156,20 +166,28 @@ mergeInto(LibraryManager.library, {
         return buffer
     },
 
-    InstantGamesBridgeShare: function() {
-        window.share()
+    InstantGamesBridgeIsRateSupported: function() {
+        var isRateSupported = window.getIsRateSupported()
+        var bufferSize = lengthBytesUTF8(isRateSupported) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(isRateSupported, buffer, bufferSize)
+        return buffer
+    },
+
+    InstantGamesBridgeShare: function(options) {
+        window.share(UTF8ToString(options))
     },
 
     InstantGamesBridgeInviteFriends: function() {
         window.inviteFriends()
     },
 
-    InstantGamesBridgeJoinCommunity: function() {
-        window.joinCommunity()
+    InstantGamesBridgeJoinCommunity: function(options) {
+        window.joinCommunity(UTF8ToString(options))
     },
 
-    InstantGamesBridgeCreatePost: function(text) {
-        window.createPost(UTF8ToString(text))
+    InstantGamesBridgeCreatePost: function(options) {
+        window.createPost(UTF8ToString(options))
     },
 
     InstantGamesBridgeAddToHomeScreen: function() {
@@ -178,6 +196,75 @@ mergeInto(LibraryManager.library, {
 
     InstantGamesBridgeAddToFavorites: function() {
         window.addToFavorites()
+    },
+
+    InstantGamesBridgeRate: function() {
+        window.rate()
+    },
+
+
+    InstantGamesBridgeIsLeaderboardSupported: function() {
+        var isLeaderboardSupported = window.getIsLeaderboardSupported()
+        var bufferSize = lengthBytesUTF8(isLeaderboardSupported) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(isLeaderboardSupported, buffer, bufferSize)
+        return buffer
+    },
+
+    InstantGamesBridgeIsLeaderboardNativePopupSupported: function() {
+        var isLeaderboardNativePopupSupported = window.getIsLeaderboardNativePopupSupported()
+        var bufferSize = lengthBytesUTF8(isLeaderboardNativePopupSupported) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(isLeaderboardNativePopupSupported, buffer, bufferSize)
+        return buffer
+    },
+
+    InstantGamesBridgeIsLeaderboardMultipleBoardsSupported: function() {
+        var isLeaderboardMultipleBoardsSupported = window.getIsLeaderboardMultipleBoardsSupported()
+        var bufferSize = lengthBytesUTF8(isLeaderboardMultipleBoardsSupported) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(isLeaderboardMultipleBoardsSupported, buffer, bufferSize)
+        return buffer
+    },
+
+    InstantGamesBridgeIsLeaderboardSetScoreSupported: function() {
+        var isLeaderboardSetScoreSupported = window.getIsLeaderboardSetScoreSupported()
+        var bufferSize = lengthBytesUTF8(isLeaderboardSetScoreSupported) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(isLeaderboardSetScoreSupported, buffer, bufferSize)
+        return buffer
+    },
+
+    InstantGamesBridgeIsLeaderboardGetScoreSupported: function() {
+        var isLeaderboardGetScoreSupported = window.getIsLeaderboardGetScoreSupported()
+        var bufferSize = lengthBytesUTF8(isLeaderboardGetScoreSupported) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(isLeaderboardGetScoreSupported, buffer, bufferSize)
+        return buffer
+    },
+
+    InstantGamesBridgeIsLeaderboardGetEntriesSupported: function() {
+        var isLeaderboardGetEntriesSupported = window.getIsLeaderboardGetEntriesSupported()
+        var bufferSize = lengthBytesUTF8(isLeaderboardGetEntriesSupported) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(isLeaderboardGetEntriesSupported, buffer, bufferSize)
+        return buffer
+    },
+
+    InstantGamesBridgeLeaderboardSetScore: function(options) {
+        window.leaderboardSetScore(UTF8ToString(options))
+    },
+
+    InstantGamesBridgeLeaderboardGetScore: function(options) {
+        window.leaderboardGetScore(UTF8ToString(options))
+    },
+
+    InstantGamesBridgeLeaderboardGetEntries: function(options) {
+        window.leaderboardGetEntries(UTF8ToString(options))
+    },
+
+    InstantGamesBridgeLeaderboardShowNativePopup: function(options) {
+        window.leaderboardShowNativePopup(UTF8ToString(options))
     }
 
 });

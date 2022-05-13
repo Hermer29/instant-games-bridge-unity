@@ -43,29 +43,22 @@
             let loading = document.getElementById('loading')
             let loadingText = document.getElementById('loading-text')
 
-            window.initialize = function(options) {
-                try {
-                    options = JSON.parse(options)
-                }
-                catch (e) {
-                    options = null
-                }
-
+            window.initialize = function() {
                 instantGamesBridge
-                    .initialize(options)
+                    .initialize()
                     .then(() => {
                         instantGamesBridge.advertisement.on(
                             'interstitial_state_changed', 
-                            state => { unityInstance.SendMessage('InstantGamesBridge', 'OnInterstitialStateChanged', state) })
+                            state => { unityInstance.SendMessage('Bridge', 'OnInterstitialStateChanged', state) })
 
                         instantGamesBridge.advertisement.on(
                             'rewarded_state_changed', 
-                            state => { unityInstance.SendMessage('InstantGamesBridge', 'OnRewardedStateChanged', state) })
+                            state => { unityInstance.SendMessage('Bridge', 'OnRewardedStateChanged', state) })
 
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnInitializationCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnInitializationCompleted', 'true')
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnInitializationCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnInitializationCompleted', 'false')
                     })
             }
 
@@ -83,6 +76,12 @@
                     return payload
                 else
                     return ''
+            }
+
+
+            // device
+            window.getDeviceType = function() {
+                return instantGamesBridge.device.type
             }
 
 
@@ -116,13 +115,13 @@
                 return ''
             }
 
-            window.authorizePlayer = function() {
-                instantGamesBridge.player.authorize()
+            window.authorizePlayer = function(options) {
+                instantGamesBridge.player.authorize(JSON.parse(options))
                     .then(() => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnAuthorizeCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnAuthorizeCompleted', 'true')
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnAuthorizeCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnAuthorizeCompleted', 'false')
                     })
             }
 
@@ -135,65 +134,63 @@
                             if (typeof data !== 'string')
                                 data = JSON.stringify(data)
 
-                            unityInstance.SendMessage('InstantGamesBridge', 'OnGetGameDataCompleted', data)
+                            unityInstance.SendMessage('Bridge', 'OnGetGameDataCompletedSuccess', data)
                         } else {
-                            unityInstance.SendMessage('InstantGamesBridge', 'OnGetGameDataCompleted', '')
+                            unityInstance.SendMessage('Bridge', 'OnGetGameDataCompletedSuccess', '')
                         }
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnGetGameDataCompleted', '')
+                        unityInstance.SendMessage('Bridge', 'OnGetGameDataCompletedFailed', '')
                     })
             }
 
             window.setGameData = function(key, value) {
                 instantGamesBridge.game.setData(key, value)
                     .then(() => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnSetGameDataCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnSetGameDataCompleted', 'true')
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnSetGameDataCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnSetGameDataCompleted', 'false')
                     })
             }
 
             window.deleteGameData = function(key) {
                 instantGamesBridge.game.deleteData(key)
                     .then(() => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnDeleteGameDataCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnDeleteGameDataCompleted', 'true')
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnDeleteGameDataCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnDeleteGameDataCompleted', 'false')
                     })
             }
 
 
             // advertisement
             window.getMinimumDelayBetweenInterstitial = function() {
-                instantGamesBridge.advertisement.minimumDelayBetweenInterstitial
+                return instantGamesBridge.advertisement.minimumDelayBetweenInterstitial.toString()
             }
 
-            window.setMinimumDelayBetweenInterstitial = function(seconds) {
-                instantGamesBridge.advertisement.setMinimumDelayBetweenInterstitial(seconds)
+            window.setMinimumDelayBetweenInterstitial = function(options) {
+                instantGamesBridge.advertisement.setMinimumDelayBetweenInterstitial(JSON.parse(options))
             }
 
-            window.showInterstitial = function(ignoreDelay) {
-                let interstitialOptions = { ignoreDelay }
-
-                instantGamesBridge.advertisement.showInterstitial(interstitialOptions)
+            window.showInterstitial = function(options) {
+                instantGamesBridge.advertisement.showInterstitial(JSON.parse(options))
                     .then(() => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnShowInterstitialCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnShowInterstitialCompleted', 'true')
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnShowInterstitialCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnShowInterstitialCompleted', 'false')
                     })
             }
 
             window.showRewarded = function() {
                 instantGamesBridge.advertisement.showRewarded()
                     .then(() => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnShowRewardedCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnShowRewardedCompleted', 'true')
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnShowRewardedCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnShowRewardedCompleted', 'false')
                     })
             }
 
@@ -223,63 +220,157 @@
                 return instantGamesBridge.social.isAddToFavoritesSupported.toString()
             }
 
-            window.share = function() {
-                instantGamesBridge.social.share()
+            window.getIsRateSupported = function() {
+                return instantGamesBridge.social.isRateSupported.toString()
+            }
+
+            window.share = function(options) {
+                instantGamesBridge.social.share(JSON.parse(options))
                     .then(() => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnShareCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnShareCompleted', 'true')
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnShareCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnShareCompleted', 'false')
                     })
             }
 
             window.inviteFriends = function() {
                 instantGamesBridge.social.inviteFriends()
                     .then(() => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnInviteFriendsCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnInviteFriendsCompleted', 'true')
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnInviteFriendsCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnInviteFriendsCompleted', 'false')
                     })
             }
 
-            window.joinCommunity = function() {
-                instantGamesBridge.social.joinCommunity()
+            window.joinCommunity = function(options) {
+                instantGamesBridge.social.joinCommunity(JSON.parse(options))
                     .then(() => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnJoinCommunityCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnJoinCommunityCompleted', 'true')
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnJoinCommunityCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnJoinCommunityCompleted', 'false')
                     })
             }
 
-            window.createPost = function(text) {
-                instantGamesBridge.social.createPost(text)
+            window.createPost = function(options) {
+                instantGamesBridge.social.createPost(JSON.parse(options))
                     .then(() => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnCreatePostCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnCreatePostCompleted', 'true')
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnCreatePostCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnCreatePostCompleted', 'false')
                     })
             }
 
             window.addToHomeScreen = function() {
                 instantGamesBridge.social.addToHomeScreen()
                     .then(() => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnAddToHomeScreenCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnAddToHomeScreenCompleted', 'true')
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnAddToHomeScreenCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnAddToHomeScreenCompleted', 'false')
                     })
             }
 
             window.addToFavorites = function() {
                 instantGamesBridge.social.addToFavorites()
                     .then(() => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnAddToFavoritesCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnAddToFavoritesCompleted', 'true')
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('InstantGamesBridge', 'OnAddToFavoritesCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnAddToFavoritesCompleted', 'false')
+                    })
+            }
+
+            window.rate = function() {
+                instantGamesBridge.social.rate()
+                    .then(() => {
+                        unityInstance.SendMessage('Bridge', 'OnRateCompleted', 'true')
+                    })
+                    .catch(error => {
+                        unityInstance.SendMessage('Bridge', 'OnRateCompleted', 'false')
+                    })
+            }
+
+
+            // leaderboard
+            window.getIsLeaderboardSupported = function() {
+                return instantGamesBridge.leaderboard.isSupported.toString()
+            }
+
+            window.getIsLeaderboardNativePopupSupported = function() {
+                return instantGamesBridge.leaderboard.isNativePopupSupported.toString()
+            }
+
+            window.getIsLeaderboardMultipleBoardsSupported = function() {
+                return instantGamesBridge.leaderboard.isMultipleBoardsSupported.toString()
+            }
+
+            window.getIsLeaderboardSetScoreSupported = function() {
+                return instantGamesBridge.leaderboard.isSetScoreSupported.toString()
+            }
+
+            window.getIsLeaderboardGetScoreSupported = function() {
+                return instantGamesBridge.leaderboard.isGetScoreSupported.toString()
+            }
+
+            window.getIsLeaderboardGetEntriesSupported = function() {
+                return instantGamesBridge.leaderboard.isGetEntriesSupported.toString()
+            }
+
+            window.leaderboardSetScore = function(options) {
+                instantGamesBridge.leaderboard.setScore(JSON.parse(options))
+                    .then(() => {
+                        unityInstance.SendMessage('Bridge', 'OnLeaderboardSetScoreCompleted', 'true')
+                    })
+                    .catch(error => {
+                        unityInstance.SendMessage('Bridge', 'OnLeaderboardSetScoreCompleted', 'false')
+                    })
+            }
+
+            window.leaderboardGetScore = function(options) {
+                instantGamesBridge.leaderboard.getScore(JSON.parse(options))
+                    .then(data => {
+                        if (data) {
+                            if (typeof data !== 'string')
+                                data = JSON.stringify(data)
+
+                            unityInstance.SendMessage('Bridge', 'OnLeaderboardGetScoreCompleted', data)
+                        } else {
+                            unityInstance.SendMessage('Bridge', 'OnLeaderboardGetScoreCompleted', '')
+                        }
+                    })
+                    .catch(error => {
+                        unityInstance.SendMessage('Bridge', 'OnLeaderboardGetScoreCompleted', 'false')
+                    })
+            }
+
+            window.leaderboardGetEntries = function(options) {
+                instantGamesBridge.leaderboard.getEntries(JSON.parse(options))
+                    .then(data => {
+                        if (data) {
+                            if (typeof data !== 'string')
+                                data = JSON.stringify(data)
+
+                            unityInstance.SendMessage('Bridge', 'OnLeaderboardGetEntriesCompletedSuccess', data)
+                        } else {
+                            unityInstance.SendMessage('Bridge', 'OnLeaderboardGetEntriesCompletedSuccess', '')
+                        }
+                    })
+                    .catch(error => {
+                        unityInstance.SendMessage('Bridge', 'OnLeaderboardGetEntriesCompletedFailed', 'false')
+                    })
+            }
+
+            window.leaderboardShowNativePopup = function(options) {
+                instantGamesBridge.leaderboard.showNativePopup(JSON.parse(options))
+                    .then(() => {
+                        unityInstance.SendMessage('Bridge', 'OnLeaderboardShowNativePopupCompleted', 'true')
+                    })
+                    .catch(error => {
+                        unityInstance.SendMessage('Bridge', 'OnLeaderboardShowNativePopupCompleted', 'false')
                     })
             }
 
