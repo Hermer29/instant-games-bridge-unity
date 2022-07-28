@@ -11,6 +11,7 @@ Join community: https://t.me/instant_games_bridge.
 + [Device](#device)
 + [Player](#player)
 + [Game](#game)
++ [Storage](#storage)
 + [Advertisement](#advertisement)
 + [Social](#social)
 + [Leaderboard](#leaderboard)
@@ -93,8 +94,25 @@ private void SomeMethod()
 ```csharp
 private void SomeMethod()
 {
-    // Get game data from storage
-    Bridge.game.GetData("key", (success, data) =>
+    // Fired when visibility state changed ('Visible', 'Hidden')
+    // For example: you can play/pause music here 
+    Bridge.game.visibilityStateChanged += state => { Debug.Log(state); };
+}
+```
+
+### Storage
+```csharp
+private void SomeMethod()
+{
+    // Current platform storage type ('LocalStorage', 'PlatformInternal')
+    Bridge.storage.defaultType
+
+    // Check if the storage supported
+    Bridge.storage.IsSupported(StorageType.LocalStorage)
+    Bridge.storage.IsSupported(StorageType.PlatformInternal)
+
+    // Get data from storage
+    Bridge.storage.Get("key", (success, data) => 
     {
         if (success)
         {
@@ -105,10 +123,11 @@ private void SomeMethod()
         {
             // Error
         }
+        
     });
 
     // Set game data in storage
-    Bridge.game.SetData("key", "value", success =>
+    Bridge.storage.Set("key", "value", success =>
     {
         if (success)
         {
@@ -121,7 +140,7 @@ private void SomeMethod()
     });
 
     // Delete game data from storage
-    Bridge.game.DeleteData("key", success =>
+    Bridge.storage.Delete("key", success =>
     {
         if (success)
         {
@@ -132,6 +151,14 @@ private void SomeMethod()
             // Error
         }
     });
+
+    // You can choose storage type
+    Bridge.storage.Get("key", Callback, StorageType.LocalStorage);
+
+    // You can send a list of keys and values
+    var keys = new List<string> { "example_1", "example_2", "example_3" };
+    var values = new List<object> { 1, "test", true };
+    Bridge.storage.Set(keys, values);
 }
 ```
 
