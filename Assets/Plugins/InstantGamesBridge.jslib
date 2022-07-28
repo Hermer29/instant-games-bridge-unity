@@ -84,16 +84,32 @@ mergeInto(LibraryManager.library, {
     },
 
 
-    InstantGamesBridgeGetGameData: function(key) {
-        window.getGameData(UTF8ToString(key))
+    InstantGamesBridgeGetStorageDefaultType: function() {
+        var storageType = window.getStorageDefaultType()
+        var bufferSize = lengthBytesUTF8(storageType) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(storageType, buffer, bufferSize)
+        return buffer
     },
 
-    InstantGamesBridgeSetGameData: function(key, value) {
-        window.setGameData(UTF8ToString(key), UTF8ToString(value))
+    InstantGamesBridgeIsStorageSupported: function(storageType) {
+        var isStorageSupported = window.getIsStorageSupported(UTF8ToString(storageType))
+        var bufferSize = lengthBytesUTF8(isStorageSupported) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(isStorageSupported, buffer, bufferSize)
+        return buffer
     },
 
-    InstantGamesBridgeDeleteGameData: function(key) {
-        window.deleteGameData(UTF8ToString(key))
+    InstantGamesBridgeGetStorageData: function(key, storageType) {
+        window.getStorageData(UTF8ToString(key), UTF8ToString(storageType))
+    },
+
+    InstantGamesBridgeSetStorageData: function(key, value, storageType) {
+        window.setStorageData(UTF8ToString(key), UTF8ToString(value), UTF8ToString(storageType))
+    },
+
+    InstantGamesBridgeDeleteStorageData: function(key, storageType) {
+        window.deleteStorageData(UTF8ToString(key), UTF8ToString(storageType))
     },
 
 

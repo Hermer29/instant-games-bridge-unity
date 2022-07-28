@@ -43,17 +43,25 @@
             let loading = document.getElementById('loading')
             let loadingText = document.getElementById('loading-text')
 
+            const STORAGE_DATA_SEPARATOR = '{bridge_data_separator}'
+            const STORAGE_KEYS_SEPARATOR = '{bridge_keys_separator}'
+            const STORAGE_VALUES_SEPARATOR = '{bridge_values_separator}'
+
             window.initialize = function() {
-                instantGamesBridge
+                bridge
                     .initialize()
                     .then(() => {
-                        instantGamesBridge.advertisement.on(
+                        bridge.advertisement.on(
                             'interstitial_state_changed', 
                             state => { unityInstance.SendMessage('Bridge', 'OnInterstitialStateChanged', state) })
 
-                        instantGamesBridge.advertisement.on(
+                        bridge.advertisement.on(
                             'rewarded_state_changed', 
                             state => { unityInstance.SendMessage('Bridge', 'OnRewardedStateChanged', state) })
+
+                        bridge.game.on(
+                            'visibility_changed', 
+                            state => { unityInstance.SendMessage('Bridge', 'OnVisibilityStateChanged', state) })
 
                         unityInstance.SendMessage('Bridge', 'OnInitializationCompleted', 'true')
                     })
@@ -63,60 +71,64 @@
             }
 
             window.getPlatformId = function() {
-                return instantGamesBridge.platform.id
+                return bridge.platform.id
             }
 
             window.getPlatformLanguage = function() {
-                return instantGamesBridge.platform.language
+                return bridge.platform.language
             }
 
             window.getPlatformPayload = function() {
-                let payload = instantGamesBridge.platform.payload
-                if (typeof payload === 'string')
+                let payload = bridge.platform.payload
+                if (typeof payload === 'string') {
                     return payload
-                else
+                } else {
                     return ''
+                }
             }
 
 
             // device
             window.getDeviceType = function() {
-                return instantGamesBridge.device.type
+                return bridge.device.type
             }
 
 
             // player
             window.getIsPlayerAuthorizationSupported = function() {
-                return instantGamesBridge.player.isAuthorizationSupported.toString()
+                return bridge.player.isAuthorizationSupported.toString()
             }
 
             window.getIsPlayerAuthorized = function() {
-                return instantGamesBridge.player.isAuthorized.toString()
+                return bridge.player.isAuthorized.toString()
             }
 
             window.getPlayerId = function() {
-                if (instantGamesBridge.player.id)
-                    return instantGamesBridge.player.id.toString()
+                if (bridge.player.id) {
+                    return bridge.player.id.toString()
+                }
 
                 return ''
             }
 
             window.getPlayerName = function() {
-                if (instantGamesBridge.player.name)
-                    return instantGamesBridge.player.name.toString()
+                if (bridge.player.name) {
+                    return bridge.player.name.toString()
+                }
 
                 return ''
             }
 
             window.getPlayerPhotos = function() {
-                if (instantGamesBridge.player.photos.length > 0)
-                    return JSON.stringify(instantGamesBridge.player.photos)
+                if (bridge.player.photos.length > 0) {
+                    return JSON.stringify(bridge.player.photos)
+                }
 
                 return ''
             }
 
             window.authorizePlayer = function(options) {
-                instantGamesBridge.player.authorize(JSON.parse(options))
+                bridge.player.authorize(JSON.parse(options))
                     .then(() => {
                         unityInstance.SendMessage('Bridge', 'OnAuthorizeCompleted', 'true')
                     })
@@ -126,56 +138,91 @@
             }
 
 
-            // game
-            window.getGameData = function(key) {
-                instantGamesBridge.game.getData(key)
-                    .then(data => {
-                        if (data) {
-                            if (typeof data !== 'string')
-                                data = JSON.stringify(data)
+            // storage
+            window.getStorageDefaultType = function() {
+                return bridge.storage.defaultType
+            }
 
-                            unityInstance.SendMessage('Bridge', 'OnGetGameDataCompletedSuccess', data)
+            window.getIsStorageSupported = function(storageType) {
+                return bridge.storage.isSupported(storageType).toString()
+            }
+
+            window.getStorageData = function(key, storageType) {
+                let keys = key.split(STORAGE_KEYS_SEPARATOR)
+
+                bridge.storage.get(keys, storageType)
+                    .then(data => {
+                        if (keys.length > 1) {
+                            let values = []
+
+                            for (let i = 0; i < keys.length; i++) {
+                                let value = data[i]
+                                if (value) {
+                                    if (typeof value !== 'string') {
+                                        value = JSON.stringify(value)
+                                    }
+
+                                    values.push(value)
+                                } else {
+                                    values.push('')
+                                }
+                            }
+
+                            unityInstance.SendMessage('Bridge', 'OnGetStorageDataSuccess', `${key}${STORAGE_DATA_SEPARATOR}${values.join(STORAGE_VALUES_SEPARATOR)}`)
                         } else {
-                            unityInstance.SendMessage('Bridge', 'OnGetGameDataCompletedSuccess', '')
+                            if (data[0]) {
+                                if (typeof data[0] !== 'string') {
+                                    data = JSON.stringify(data[0])
+                                }
+                            } else {
+                                data = ''
+                            }
+
+                            unityInstance.SendMessage('Bridge', 'OnGetStorageDataSuccess', `${key}${STORAGE_DATA_SEPARATOR}${data}`)
                         }
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('Bridge', 'OnGetGameDataCompletedFailed', '')
+                        unityInstance.SendMessage('Bridge', 'OnGetStorageDataFailed', key)
                     })
             }
 
-            window.setGameData = function(key, value) {
-                instantGamesBridge.game.setData(key, value)
+            window.setStorageData = function(key, value, storageType) {
+                let keys = key.split(STORAGE_KEYS_SEPARATOR)
+                let values = value.split(STORAGE_VALUES_SEPARATOR)
+
+                bridge.storage.set(keys, values, storageType)
                     .then(() => {
-                        unityInstance.SendMessage('Bridge', 'OnSetGameDataCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnSetStorageDataSuccess', key)
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('Bridge', 'OnSetGameDataCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnSetStorageDataFailed', key)
                     })
             }
 
-            window.deleteGameData = function(key) {
-                instantGamesBridge.game.deleteData(key)
+            window.deleteStorageData = function(key, storageType) {
+                let keys = key.split(STORAGE_KEYS_SEPARATOR)
+
+                bridge.storage.delete(keys, storageType)
                     .then(() => {
-                        unityInstance.SendMessage('Bridge', 'OnDeleteGameDataCompleted', 'true')
+                        unityInstance.SendMessage('Bridge', 'OnDeleteStorageDataSuccess', key)
                     })
                     .catch(error => {
-                        unityInstance.SendMessage('Bridge', 'OnDeleteGameDataCompleted', 'false')
+                        unityInstance.SendMessage('Bridge', 'OnDeleteStorageDataFailed', key)
                     })
             }
 
 
             // advertisement
             window.getMinimumDelayBetweenInterstitial = function() {
-                return instantGamesBridge.advertisement.minimumDelayBetweenInterstitial.toString()
+                return bridge.advertisement.minimumDelayBetweenInterstitial.toString()
             }
 
             window.setMinimumDelayBetweenInterstitial = function(options) {
-                instantGamesBridge.advertisement.setMinimumDelayBetweenInterstitial(JSON.parse(options))
+                bridge.advertisement.setMinimumDelayBetweenInterstitial(JSON.parse(options))
             }
 
             window.showInterstitial = function(options) {
-                instantGamesBridge.advertisement.showInterstitial(JSON.parse(options))
+                bridge.advertisement.showInterstitial(JSON.parse(options))
                     .then(() => {
                         unityInstance.SendMessage('Bridge', 'OnShowInterstitialCompleted', 'true')
                     })
@@ -185,7 +232,7 @@
             }
 
             window.showRewarded = function() {
-                instantGamesBridge.advertisement.showRewarded()
+                bridge.advertisement.showRewarded()
                     .then(() => {
                         unityInstance.SendMessage('Bridge', 'OnShowRewardedCompleted', 'true')
                     })
@@ -197,35 +244,35 @@
 
             // social
             window.getIsShareSupported = function() {
-                return instantGamesBridge.social.isShareSupported.toString()
+                return bridge.social.isShareSupported.toString()
             }
 
             window.getIsInviteFriendsSupported = function() {
-                return instantGamesBridge.social.isInviteFriendsSupported.toString()
+                return bridge.social.isInviteFriendsSupported.toString()
             }
 
             window.getIsJoinCommunitySupported = function() {
-                return instantGamesBridge.social.isJoinCommunitySupported.toString()
+                return bridge.social.isJoinCommunitySupported.toString()
             }
 
             window.getIsCreatePostSupported = function() {
-                return instantGamesBridge.social.isCreatePostSupported.toString()
+                return bridge.social.isCreatePostSupported.toString()
             }
 
             window.getIsAddToHomeScreenSupported = function() {
-                return instantGamesBridge.social.isAddToHomeScreenSupported.toString()
+                return bridge.social.isAddToHomeScreenSupported.toString()
             }
 
             window.getIsAddToFavoritesSupported = function() {
-                return instantGamesBridge.social.isAddToFavoritesSupported.toString()
+                return bridge.social.isAddToFavoritesSupported.toString()
             }
 
             window.getIsRateSupported = function() {
-                return instantGamesBridge.social.isRateSupported.toString()
+                return bridge.social.isRateSupported.toString()
             }
 
             window.share = function(options) {
-                instantGamesBridge.social.share(JSON.parse(options))
+                bridge.social.share(JSON.parse(options))
                     .then(() => {
                         unityInstance.SendMessage('Bridge', 'OnShareCompleted', 'true')
                     })
@@ -235,7 +282,7 @@
             }
 
             window.inviteFriends = function() {
-                instantGamesBridge.social.inviteFriends()
+                bridge.social.inviteFriends()
                     .then(() => {
                         unityInstance.SendMessage('Bridge', 'OnInviteFriendsCompleted', 'true')
                     })
@@ -245,7 +292,7 @@
             }
 
             window.joinCommunity = function(options) {
-                instantGamesBridge.social.joinCommunity(JSON.parse(options))
+                bridge.social.joinCommunity(JSON.parse(options))
                     .then(() => {
                         unityInstance.SendMessage('Bridge', 'OnJoinCommunityCompleted', 'true')
                     })
@@ -255,7 +302,7 @@
             }
 
             window.createPost = function(options) {
-                instantGamesBridge.social.createPost(JSON.parse(options))
+                bridge.social.createPost(JSON.parse(options))
                     .then(() => {
                         unityInstance.SendMessage('Bridge', 'OnCreatePostCompleted', 'true')
                     })
@@ -265,7 +312,7 @@
             }
 
             window.addToHomeScreen = function() {
-                instantGamesBridge.social.addToHomeScreen()
+                bridge.social.addToHomeScreen()
                     .then(() => {
                         unityInstance.SendMessage('Bridge', 'OnAddToHomeScreenCompleted', 'true')
                     })
@@ -275,7 +322,7 @@
             }
 
             window.addToFavorites = function() {
-                instantGamesBridge.social.addToFavorites()
+                bridge.social.addToFavorites()
                     .then(() => {
                         unityInstance.SendMessage('Bridge', 'OnAddToFavoritesCompleted', 'true')
                     })
@@ -285,7 +332,7 @@
             }
 
             window.rate = function() {
-                instantGamesBridge.social.rate()
+                bridge.social.rate()
                     .then(() => {
                         unityInstance.SendMessage('Bridge', 'OnRateCompleted', 'true')
                     })
@@ -297,31 +344,31 @@
 
             // leaderboard
             window.getIsLeaderboardSupported = function() {
-                return instantGamesBridge.leaderboard.isSupported.toString()
+                return bridge.leaderboard.isSupported.toString()
             }
 
             window.getIsLeaderboardNativePopupSupported = function() {
-                return instantGamesBridge.leaderboard.isNativePopupSupported.toString()
+                return bridge.leaderboard.isNativePopupSupported.toString()
             }
 
             window.getIsLeaderboardMultipleBoardsSupported = function() {
-                return instantGamesBridge.leaderboard.isMultipleBoardsSupported.toString()
+                return bridge.leaderboard.isMultipleBoardsSupported.toString()
             }
 
             window.getIsLeaderboardSetScoreSupported = function() {
-                return instantGamesBridge.leaderboard.isSetScoreSupported.toString()
+                return bridge.leaderboard.isSetScoreSupported.toString()
             }
 
             window.getIsLeaderboardGetScoreSupported = function() {
-                return instantGamesBridge.leaderboard.isGetScoreSupported.toString()
+                return bridge.leaderboard.isGetScoreSupported.toString()
             }
 
             window.getIsLeaderboardGetEntriesSupported = function() {
-                return instantGamesBridge.leaderboard.isGetEntriesSupported.toString()
+                return bridge.leaderboard.isGetEntriesSupported.toString()
             }
 
             window.leaderboardSetScore = function(options) {
-                instantGamesBridge.leaderboard.setScore(JSON.parse(options))
+                bridge.leaderboard.setScore(JSON.parse(options))
                     .then(() => {
                         unityInstance.SendMessage('Bridge', 'OnLeaderboardSetScoreCompleted', 'true')
                     })
@@ -331,11 +378,12 @@
             }
 
             window.leaderboardGetScore = function(options) {
-                instantGamesBridge.leaderboard.getScore(JSON.parse(options))
+                bridge.leaderboard.getScore(JSON.parse(options))
                     .then(data => {
                         if (data) {
-                            if (typeof data !== 'string')
+                            if (typeof data !== 'string') {
                                 data = JSON.stringify(data)
+                            }
 
                             unityInstance.SendMessage('Bridge', 'OnLeaderboardGetScoreCompleted', data)
                         } else {
@@ -348,11 +396,12 @@
             }
 
             window.leaderboardGetEntries = function(options) {
-                instantGamesBridge.leaderboard.getEntries(JSON.parse(options))
+                bridge.leaderboard.getEntries(JSON.parse(options))
                     .then(data => {
                         if (data) {
-                            if (typeof data !== 'string')
+                            if (typeof data !== 'string') {
                                 data = JSON.stringify(data)
+                            }
 
                             unityInstance.SendMessage('Bridge', 'OnLeaderboardGetEntriesCompletedSuccess', data)
                         } else {
@@ -365,7 +414,7 @@
             }
 
             window.leaderboardShowNativePopup = function(options) {
-                instantGamesBridge.leaderboard.showNativePopup(JSON.parse(options))
+                bridge.leaderboard.showNativePopup(JSON.parse(options))
                     .then(() => {
                         unityInstance.SendMessage('Bridge', 'OnLeaderboardShowNativePopupCompleted', 'true')
                     })

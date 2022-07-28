@@ -4,6 +4,7 @@ using InstantGamesBridge.Common;
 using InstantGamesBridge.Modules.Advertisement;
 using InstantGamesBridge.Modules.Device;
 using InstantGamesBridge.Modules.Game;
+using InstantGamesBridge.Modules.Storage;
 using InstantGamesBridge.Modules.Leaderboard;
 using InstantGamesBridge.Modules.Platform;
 using InstantGamesBridge.Modules.Player;
@@ -21,6 +22,8 @@ namespace InstantGamesBridge
         public static AdvertisementModule advertisement { get; private set; }
 
         public static GameModule game { get; private set; }
+
+        public static StorageModule storage { get; private set; }
 
         public static PlatformModule platform { get; private set; }
 
@@ -65,8 +68,9 @@ namespace InstantGamesBridge
             if (isInitialized)
             {
                 platform = new PlatformModule();
-                player = gameObject.AddComponent<PlayerModule>();
                 game = gameObject.AddComponent<GameModule>();
+                player = gameObject.AddComponent<PlayerModule>();
+                storage = gameObject.AddComponent<StorageModule>();
                 advertisement = gameObject.AddComponent<AdvertisementModule>();
                 social = gameObject.AddComponent<SocialModule>();
                 device = new DeviceModule();
