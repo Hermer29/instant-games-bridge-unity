@@ -60,7 +60,7 @@
                             state => { unityInstance.SendMessage('Bridge', 'OnRewardedStateChanged', state) })
 
                         bridge.game.on(
-                            'visibility_changed', 
+                            'visibility_state_changed', 
                             state => { unityInstance.SendMessage('Bridge', 'OnVisibilityStateChanged', state) })
 
                         unityInstance.SendMessage('Bridge', 'OnInitializationCompleted', 'true')
@@ -135,6 +135,12 @@
                     .catch(error => {
                         unityInstance.SendMessage('Bridge', 'OnAuthorizeCompleted', 'false')
                     })
+            }
+
+
+            // game
+            window.getVisibilityState = function() {
+                return bridge.game.visibilityState
             }
 
 

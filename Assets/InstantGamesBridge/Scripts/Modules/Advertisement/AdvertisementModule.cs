@@ -51,6 +51,8 @@ namespace InstantGamesBridge.Modules.Advertisement
 
 #if UNITY_EDITOR
         private int _minimumDelayBetweenInterstitial;
+
+        private DateTime _lastInterstitialShownTimestamp = DateTime.MinValue;
 #endif
 
 
@@ -83,9 +85,18 @@ namespace InstantGamesBridge.Modules.Advertisement
             var json = ignoreDelay.ToString().SurroundWithKey("ignoreDelay").SurroundWithBraces().Fix();
             InstantGamesBridgeShowInterstitial(json);
 #else
-            OnShowInterstitialCompleted("true");
-            OnInterstitialStateChanged(InterstitialState.Opened.ToString());
-            OnInterstitialStateChanged(InterstitialState.Closed.ToString());
+            var delta = DateTime.Now - _lastInterstitialShownTimestamp;
+            if (delta.TotalSeconds > _minimumDelayBetweenInterstitial || ignoreDelay)
+            {
+                OnShowInterstitialCompleted("true");
+                OnInterstitialStateChanged(InterstitialState.Opened.ToString());
+                OnInterstitialStateChanged(InterstitialState.Closed.ToString());
+            }
+            else
+            {
+                OnShowInterstitialCompleted("false");
+                OnInterstitialStateChanged(InterstitialState.Failed.ToString());
+            }
 #endif
         }
 
@@ -129,6 +140,12 @@ namespace InstantGamesBridge.Modules.Advertisement
         private void OnShowInterstitialCompleted(string result)
         {
             var isSuccess = result == "true";
+
+#if UNITY_EDITOR
+            if (isSuccess)
+                _lastInterstitialShownTimestamp = DateTime.Now;
+#endif
+
             _showInterstitialCallback?.Invoke(isSuccess);
             _showInterstitialCallback = null;
         }

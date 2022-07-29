@@ -84,6 +84,15 @@ mergeInto(LibraryManager.library, {
     },
 
 
+    InstantGamesBridgeGetVisibilityState: function() {
+        var visibilityState = window.getVisibilityState()
+        var bufferSize = lengthBytesUTF8(visibilityState) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(visibilityState, buffer, bufferSize)
+        return buffer
+    },
+
+
     InstantGamesBridgeGetStorageDefaultType: function() {
         var storageType = window.getStorageDefaultType()
         var bufferSize = lengthBytesUTF8(storageType) + 1
