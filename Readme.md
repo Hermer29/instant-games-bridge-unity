@@ -144,9 +144,39 @@ private void SomeMethod()
 ```
 
 ### Advertisement
+If you want to show banners on VK — add [bridge-vk-banner-extension](https://github.com/instant-games-bridge/instant-games-bridge-vk-banner-extension) (+482kb).
 ```csharp
 private void SomeMethod()
 {
+    /* -- -- -- Banners -- -- -- */
+    Bridge.advertisement.isBannerSupported
+    Bridge.advertisement.isBannerShowing
+
+    Bridge.advertisement.ShowBanner(
+        success => { 
+            if (success)
+            {
+                // Success
+            }
+            else
+            {
+                // Error
+            }
+        },
+        new ShowBannerVkOptions(VkBannerPosition.Bottom));
+
+    Bridge.advertisement.HideBanner(
+        success => { 
+            if (success)
+            {
+                // Success
+            }
+            else
+            {
+                // Error
+            }
+        });
+
     /* -- -- -- Delays Between Interstitials -- -- -- */
     Bridge.advertisement.minimumDelayBetweenInterstitial // Default = 60 seconds
 
