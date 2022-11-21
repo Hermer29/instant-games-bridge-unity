@@ -8,7 +8,7 @@ namespace Examples
     {
         [SerializeField] private Text _type;
 
-        private void OnEnable()
+        private void Start()
         {
             _type.text = $"Type: { Bridge.device.type }";
         }

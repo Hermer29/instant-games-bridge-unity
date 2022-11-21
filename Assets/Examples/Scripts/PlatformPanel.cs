@@ -12,7 +12,7 @@ namespace Examples
 
         [SerializeField] private Text _payload;
 
-        private void OnEnable()
+        private void Start()
         {
             _id.text = $"ID: { Bridge.platform.id }";
             _language.text = $"Language: { Bridge.platform.language }";

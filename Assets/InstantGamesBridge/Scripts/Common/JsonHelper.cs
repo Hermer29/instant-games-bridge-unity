@@ -31,11 +31,15 @@ namespace InstantGamesBridge.Common
                 var targetPlatform = options.GetTargetPlatform();
 
                 if (alreadyAddedPlatforms.Contains(targetPlatform))
+                {
                     continue;
+                }
 
                 if (i > 0 && i < platformDependedOptions.Length - 1)
+                {
                     json += ", ";
-                
+                }
+
                 json += options.ToJson();
                 alreadyAddedPlatforms.Add(targetPlatform);
             }

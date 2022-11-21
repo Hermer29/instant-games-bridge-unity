@@ -60,13 +60,7 @@ namespace InstantGamesBridge.Modules.Storage
 #if !UNITY_EDITOR
             return InstantGamesBridgeIsStorageSupported(ConvertStorageType(storageType)) == "true";
 #else
-            switch (storageType)
-            {
-                case StorageType.LocalStorage:
-                    return true;
-                default:
-                    return false;
-            }
+            return storageType == StorageType.LocalStorage;
 #endif
         }
 
@@ -108,7 +102,9 @@ namespace InstantGamesBridge.Modules.Storage
                 {
                     var v = PlayerPrefs.GetString($"{_storageDataEditorPlayerPrefsPrefix}_{k}", null);
                     if (string.IsNullOrEmpty(v))
+                    {
                         v = null;
+                    }
 
                     values.Add(v);
                 }
@@ -224,7 +220,9 @@ namespace InstantGamesBridge.Modules.Storage
         {
             var keyEndIndex = result.IndexOf(_dataSeparator);
             if (keyEndIndex <= 0)
+            {
                 return;
+            }
 
             var keysString = result.Substring(0, keyEndIndex);
             var valuesString = result.Substring(keyEndIndex + _dataSeparator.Length, result.Length - keyEndIndex - _dataSeparator.Length);
@@ -238,7 +236,9 @@ namespace InstantGamesBridge.Modules.Storage
                 {
                     var value = values[i];
                     if (string.IsNullOrEmpty(value))
+                    {
                         values[i] = null;
+                    }
                 }
 
                 if (_getMultipleDataCallbacks.TryGetValue(keysString, out var callbacks))

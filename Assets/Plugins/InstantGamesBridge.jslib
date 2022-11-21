@@ -1,10 +1,5 @@
 mergeInto(LibraryManager.library, {
 
-    InstantGamesBridgeInitialize: function() {
-        window.initialize()
-    },
-
-
     InstantGamesBridgeGetPlatformId: function() {
         var platformId = window.getPlatformId()
         var bufferSize = lengthBytesUTF8(platformId) + 1
@@ -122,6 +117,22 @@ mergeInto(LibraryManager.library, {
     },
 
 
+    InstantGamesBridgeIsBannerSupported: function() {
+        var isBannerSupported = window.getIsBannerSupported()
+        var bufferSize = lengthBytesUTF8(isBannerSupported) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(isBannerSupported, buffer, bufferSize)
+        return buffer
+    },
+    
+    InstantGamesBridgeIsBannerShowing: function() {
+        var isBannerShowing = window.getIsBannerShowing()
+        var bufferSize = lengthBytesUTF8(isBannerShowing) + 1
+        var buffer = _malloc(bufferSize)
+        stringToUTF8(isBannerShowing, buffer, bufferSize)
+        return buffer
+    },
+
     InstantGamesBridgeMinimumDelayBetweenInterstitial: function() {
         var minimumDelayBetweenInterstitial = window.getMinimumDelayBetweenInterstitial()
         var bufferSize = lengthBytesUTF8(minimumDelayBetweenInterstitial) + 1
@@ -132,6 +143,14 @@ mergeInto(LibraryManager.library, {
 
     InstantGamesBridgeSetMinimumDelayBetweenInterstitial: function(options) {
         window.setMinimumDelayBetweenInterstitial(UTF8ToString(options))
+    },
+    
+    InstantGamesBridgeShowBanner: function(options) {
+        window.showBanner(UTF8ToString(options))
+    },
+        
+    InstantGamesBridgeHideBanner: function() {
+        window.hideBanner()
     },
 
     InstantGamesBridgeShowInterstitial: function(options) {

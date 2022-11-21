@@ -13,14 +13,20 @@ namespace InstantGamesBridge.Common
             get
             {
                 if (_isApplicationQuitting)
+                {
                     return null;
+                }
 
                 if (_instance != null)
+                {
                     return _instance;
+                }
 
                 _instance = FindObjectOfType<T>();
                 if (_instance != null)
+                {
                     return _instance;
+                }
 
                 var obj = new GameObject { name = $"{typeof(T).Name}" };
                 _instance = obj.AddComponent<T>();
@@ -36,7 +42,9 @@ namespace InstantGamesBridge.Common
                 DontDestroyOnLoad(gameObject);
             }
             else
+            {
                 Destroy(gameObject);
+            }
         }
 
         protected virtual void OnApplicationQuit()

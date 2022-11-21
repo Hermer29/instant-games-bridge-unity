@@ -25,19 +25,12 @@ namespace Examples
 
         [SerializeField] private GameObject _overlay;
 
-
-        private void OnEnable()
+        private void Start()
         {
             UpdateValues();
             _overlay.SetActive(false);
             _authorizeButton.onClick.AddListener(OnAuthorizeButtonClicked);
         }
-
-        private void OnDisable()
-        {
-            _authorizeButton.onClick.RemoveAllListeners();
-        }
-
 
         private void OnAuthorizeButtonClicked()
         {
@@ -59,7 +52,9 @@ namespace Examples
             _name.text = $"Name: { Bridge.player.name }";
 
             if (Bridge.player.photos.Count > 0)
+            {
                 StartCoroutine(LoadPhoto(Bridge.player.photos[0]));
+            }
         }
 
         private IEnumerator LoadPhoto(string url)

@@ -45,7 +45,7 @@ namespace Examples
 
         [SerializeField] private GameObject _overlay;
 
-        private void OnEnable()
+        private void Start()
         {
             _isSupported.text = $"Is Supported: { Bridge.leaderboard.isSupported }";
             _isNativePopupSupported.text = $"Is Native Popup Supported: { Bridge.leaderboard.isNativePopupSupported }";
@@ -58,14 +58,6 @@ namespace Examples
             _setScoreButton.onClick.AddListener(OnSetScoreButtonClicked);
             _getScoreButton.onClick.AddListener(OnGetScoreButtonClicked);
             _getEntriesButton.onClick.AddListener(OnGetEntriesButtonClicked);
-        }
-
-        private void OnDisable()
-        {
-            _showNativePopupButton.onClick.RemoveAllListeners();
-            _setScoreButton.onClick.RemoveAllListeners();
-            _getScoreButton.onClick.RemoveAllListeners();
-            _getEntriesButton.onClick.RemoveAllListeners();
         }
 
         private void OnShowNativePopupButtonClicked()
@@ -99,7 +91,9 @@ namespace Examples
                 (success, score) =>
                 {
                     if (success)
+                    {
                         _getSetScoreYandexScoreInput.text = score.ToString();
+                    }
 
                     _overlay.SetActive(false);
                 },
@@ -127,7 +121,9 @@ namespace Examples
                         var text = "Entries:";
 
                         foreach (var entry in entries)
+                        {
                             text += $"\n ID: {entry.id}, name: {entry.name}, score: {entry.score}, rank: {entry.rank}";
+                        }
 
                         _entriesContainer.text = text;
                     }

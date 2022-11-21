@@ -19,8 +19,9 @@ namespace InstantGamesBridge.Modules.Game
             {
                 var state = InstantGamesBridgeGetVisibilityState();
 
-                if (Enum.TryParse<VisibilityState>(state, true, out var value))
+                if (Enum.TryParse<VisibilityState>(state, true, out var value)) {
                     return value;
+                }
 
                 return VisibilityState.Visible;
             }

@@ -15,8 +15,9 @@ namespace InstantGamesBridge.Modules.Device
             {
                 var stringType = InstantGamesBridgeGetDeviceType();
 
-                if (Enum.TryParse<DeviceType>(stringType, true, out var value))
+                if (Enum.TryParse<DeviceType>(stringType, true, out var value)) {
                     return value;
+                }
 
                 return DeviceType.Desktop;
             }

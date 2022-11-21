@@ -189,7 +189,9 @@ namespace InstantGamesBridge.Modules.Leaderboard
             var score = 0;
 
             if (isSuccess)
+            {
                 int.TryParse(result, out score);
+            }
 
             _getScoreCallback?.Invoke(isSuccess, score);
             _getScoreCallback = null;
@@ -205,9 +207,14 @@ namespace InstantGamesBridge.Modules.Leaderboard
                 {
                     var entriesContainer = JsonUtility.FromJson<EntriesContainer>(result.SurroundWithKey("entries").SurroundWithBraces());
                     if (entriesContainer != null && entriesContainer.entries.Count > 0)
+                    {
                         entries = entriesContainer.entries;
+                    }
                 }
-                catch (Exception) { }
+                catch (Exception e)
+                {
+                    Debug.Log(e);
+                }
             }
 
             _getEntriesCallback?.Invoke(true, entries);

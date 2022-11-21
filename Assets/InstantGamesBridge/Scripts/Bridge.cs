@@ -1,5 +1,4 @@
 #if UNITY_WEBGL
-using System;
 using InstantGamesBridge.Common;
 using InstantGamesBridge.Modules.Advertisement;
 using InstantGamesBridge.Modules.Device;
@@ -9,76 +8,53 @@ using InstantGamesBridge.Modules.Leaderboard;
 using InstantGamesBridge.Modules.Platform;
 using InstantGamesBridge.Modules.Player;
 using InstantGamesBridge.Modules.Social;
-#if !UNITY_EDITOR
-using System.Runtime.InteropServices;
-#endif
 
 namespace InstantGamesBridge
 {
     public class Bridge : Singleton<Bridge>
     {
-        public static bool isInitialized { get; private set; }
+        public static AdvertisementModule advertisement => instance._advertisement;
 
-        public static AdvertisementModule advertisement { get; private set; }
+        public static GameModule game => instance._game;
 
-        public static GameModule game { get; private set; }
+        public static StorageModule storage => instance._storage; 
 
-        public static StorageModule storage { get; private set; }
+        public static PlatformModule platform => instance._platform; 
 
-        public static PlatformModule platform { get; private set; }
+        public static SocialModule social =>instance. _social; 
 
-        public static SocialModule social { get; private set; }
+        public static PlayerModule player =>instance. _player; 
 
-        public static PlayerModule player { get; private set; }
+        public static DeviceModule device =>instance. _device; 
 
-        public static DeviceModule device { get; private set; }
+        public static LeaderboardModule leaderboard => instance._leaderboard; 
 
-        public static LeaderboardModule leaderboard { get; private set; }
+        private AdvertisementModule _advertisement;
+        
+        private GameModule _game;
+        
+        private StorageModule _storage;
+        
+        private PlatformModule _platform;
 
-#if !UNITY_EDITOR
-        [DllImport("__Internal")]
-        private static extern void InstantGamesBridgeInitialize();
-#endif
+        private SocialModule _social;
 
-        private Action<bool> _initializationCallback;
+        private PlayerModule _player;
 
+        private DeviceModule _device;
 
-        public static void Initialize(Action<bool> onComplete = null)
+        private LeaderboardModule _leaderboard;
+
+        protected override void Awake()
         {
-            if (isInitialized)
-            {
-                onComplete?.Invoke(true);
-                return;
-            }
-
-            instance._initializationCallback = onComplete;
-#if !UNITY_EDITOR
-            InstantGamesBridgeInitialize();
-#else
-            instance.OnInitializationCompleted("true");
-#endif
-        }
-
-
-        // Called from JS
-        private void OnInitializationCompleted(string result)
-        {
-            isInitialized = result == "true";
-
-            if (isInitialized)
-            {
-                platform = new PlatformModule();
-                game = gameObject.AddComponent<GameModule>();
-                player = gameObject.AddComponent<PlayerModule>();
-                storage = gameObject.AddComponent<StorageModule>();
-                advertisement = gameObject.AddComponent<AdvertisementModule>();
-                social = gameObject.AddComponent<SocialModule>();
-                device = new DeviceModule();
-                leaderboard = gameObject.AddComponent<LeaderboardModule>();
-            }
-
-            _initializationCallback?.Invoke(isInitialized);
-            _initializationCallback = null;
+            _platform = new PlatformModule();
+            _game = gameObject.AddComponent<GameModule>();
+            _player = gameObject.AddComponent<PlayerModule>();
+            _storage = gameObject.AddComponent<StorageModule>();
+            _advertisement = gameObject.AddComponent<AdvertisementModule>();
+            _social = gameObject.AddComponent<SocialModule>();
+            _device = new DeviceModule();
+            _leaderboard = gameObject.AddComponent<LeaderboardModule>();
         }
     }
 }

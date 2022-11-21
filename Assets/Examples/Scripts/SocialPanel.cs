@@ -45,7 +45,7 @@ namespace Examples
 
         [SerializeField] private GameObject _overlay;
 
-        private void OnEnable()
+        private void Start()
         {
             _isShareSupported.text = $"Is Share Supported: { Bridge.social.isShareSupported }";
             _isInviteFriendsSupported.text = $"Is Invite Friends Supported: { Bridge.social.isInviteFriendsSupported }";
@@ -63,18 +63,6 @@ namespace Examples
             _createPostButton.onClick.AddListener(OnCreatePostButtonClicked);
             _rateButton.onClick.AddListener(OnRateButtonClicked);
         }
-
-        private void OnDisable()
-        {
-            _shareButton.onClick.RemoveAllListeners();
-            _inviteFriendsButton.onClick.RemoveAllListeners();
-            _joinCommunityButton.onClick.RemoveAllListeners();
-            _addToFavoritesButton.onClick.RemoveAllListeners();
-            _addToHomeScreenButton.onClick.RemoveAllListeners();
-            _createPostButton.onClick.RemoveAllListeners();
-            _rateButton.onClick.RemoveAllListeners();
-        }
-
 
         private void OnShareButtonClicked()
         {

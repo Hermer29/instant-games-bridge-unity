@@ -30,8 +30,7 @@ namespace Examples
 
         private const string _levelKey = "level";
 
-
-        private void OnEnable()
+        private void Start()
         {
             _defaultTypeText.text = $"Default Type: { Bridge.storage.defaultType }";
             _isLocalStorageSupportedText.text = $"Is Local Storage Supported: { Bridge.storage.IsSupported(StorageType.LocalStorage) }";
@@ -41,14 +40,6 @@ namespace Examples
             _getStorageDataButton.onClick.AddListener(OnGetStorageDataButtonClicked);
             _deleteStorageDataButton.onClick.AddListener(OnDeleteStorageDataButtonClicked);
         }
-
-        private void OnDisable()
-        {
-            _setStorageDataButton.onClick.RemoveAllListeners();
-            _getStorageDataButton.onClick.RemoveAllListeners();
-            _deleteStorageDataButton.onClick.RemoveAllListeners();
-        }
-
 
         private void OnSetStorageDataButtonClicked()
         {

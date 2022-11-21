@@ -41,8 +41,9 @@ namespace InstantGamesBridge.Modules.Player
             {
 #if !UNITY_EDITOR
                 var value = InstantGamesBridgePlayerId();
-                if (string.IsNullOrEmpty(value))
+                if (string.IsNullOrEmpty(value)) {
                     return null;
+                }
 
                 return value;
 #else
@@ -57,8 +58,9 @@ namespace InstantGamesBridge.Modules.Player
             {
 #if !UNITY_EDITOR
                 var value = InstantGamesBridgePlayerName();
-                if (string.IsNullOrEmpty(value))
+                if (string.IsNullOrEmpty(value)) {
                     return null;
+                }
 
                 return value;
 #else
@@ -73,8 +75,9 @@ namespace InstantGamesBridge.Modules.Player
             {
 #if !UNITY_EDITOR
                 var json = InstantGamesBridgePlayerPhotos();
-                if (string.IsNullOrEmpty(json))
+                if (string.IsNullOrEmpty(json)) {
                     return new List<string>();
+                }
                 
                 try
                 {
