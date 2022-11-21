@@ -6,7 +6,6 @@ Roadmap: https://trello.com/b/NjF29vTW.
 Join community: https://t.me/instant_games_bridge.
 
 ## Usage
-+ [Setup](#setup)
 + [Platform](#platform)
 + [Device](#device)
 + [Player](#player)
@@ -16,24 +15,6 @@ Join community: https://t.me/instant_games_bridge.
 + [Social](#social)
 + [Leaderboard](#leaderboard)
 
-### Setup
-First you need to initialize the SDK:
-```csharp
-private void Start()
-{
-    Bridge.Initialize(success =>
-    {
-        if (success)
-        {
-            // Initialized. You can use other methods.
-        }
-        else
-        {
-            // Error
-        }
-    });
-}
-```
 ### Platform
 ```csharp
 // ID of current platform ('vk', 'yandex', 'mock')
