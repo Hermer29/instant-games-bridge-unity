@@ -47,6 +47,7 @@ namespace InstantGamesBridge
 
         protected override void Awake()
         {
+            base.Awake();
             _platform = new PlatformModule();
             _game = gameObject.AddComponent<GameModule>();
             _player = gameObject.AddComponent<PlayerModule>();
