@@ -29,6 +29,10 @@ Bridge.platform.language
 // Yandex: yandex.com/games/play/183100?payload=your-info
 // Mock: site.com/game?payload=your-info
 Bridge.platform.payload
+
+// Message to the platform. Supported only on CrazyGames.
+// Possible values: 'GameLoadingStarted', 'GameLoadingStopped', 'GameplayStarted', 'GameplayStopped', 'PlayerGotAchievement'
+Bridge.platform.SendMessage(message)
 ```
 
 ### Device
@@ -150,32 +154,9 @@ private void SomeMethod()
 {
     /* -- -- -- Banners -- -- -- */
     Bridge.advertisement.isBannerSupported
-    Bridge.advertisement.isBannerShowing
 
-    Bridge.advertisement.ShowBanner(
-        success => { 
-            if (success)
-            {
-                // Success
-            }
-            else
-            {
-                // Error
-            }
-        },
-        new ShowBannerVkOptions(VkBannerPosition.Bottom));
-
-    Bridge.advertisement.HideBanner(
-        success => { 
-            if (success)
-            {
-                // Success
-            }
-            else
-            {
-                // Error
-            }
-        });
+    Bridge.advertisement.ShowBanner(new ShowBannerVkOptions(VkBannerPosition.Bottom));
+    Bridge.advertisement.HideBanner();
 
     /* -- -- -- Delays Between Interstitials -- -- -- */
     Bridge.advertisement.minimumDelayBetweenInterstitial // Default = 60 seconds
@@ -195,48 +176,20 @@ private void SomeMethod()
     
     //  You can use platform specific ignoring:
     Bridge.advertisement.ShowInterstitial(
-        success => { 
-            if (success)
-            {
-                // Success
-            }
-            else
-            {
-                // Error
-            }
-        },
         new ShowInterstitialVkOptions(ignoreDelay),
         new ShowInterstitialYandexOptions(ignoreDelay));
     
     // Or common to all platforms:
-    Bridge.advertisement.ShowInterstitial(
-        ignoreDelay, 
-        success => { 
-            if (success)
-            {
-                // Success
-            }
-            else
-            {
-                // Error
-            }
-        });
+    Bridge.advertisement.ShowInterstitial(ignoreDelay);
 
     /* -- -- -- Rewarded Video -- -- -- */
     // Request to show rewarded video ads
-    Bridge.advertisement.ShowRewarded(success =>
-    {
-        if (success)
-        {
-            // Success
-        }
-        else
-        {
-            // Error
-        }
-    });
+    Bridge.advertisement.ShowRewarded();
     
     /* -- -- -- Advertisement States -- -- -- */
+    // Fired when interstitial state changed ('Shown', 'Hidden', 'Failed')
+    Bridge.advertisement.bannerStateChanged += state => { Debug.Log($"Banner state: {state}"); };
+
     // Fired when interstitial state changed ('Opened', 'Closed', 'Failed')
     Bridge.advertisement.interstitialStateChanged += state => { Debug.Log($"Interstitial state: {state}"); };
     
