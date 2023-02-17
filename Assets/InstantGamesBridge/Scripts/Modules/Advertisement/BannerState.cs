@@ -1,11 +1,10 @@
 ﻿namespace InstantGamesBridge.Modules.Advertisement
 {
-    public enum RewardedState
+    public enum BannerState
     {
         Loading,
-        Opened,
-        Rewarded,
-        Closed,
+        Shown,
+        Hidden,
         Failed
     }
 }

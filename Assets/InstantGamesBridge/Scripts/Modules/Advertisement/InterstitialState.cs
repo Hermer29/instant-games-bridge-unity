@@ -2,7 +2,7 @@
 {
     public enum InterstitialState
     {
-        None,
+        Loading,
         Opened,
         Closed,
         Failed

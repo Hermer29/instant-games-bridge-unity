@@ -23,6 +23,10 @@ mergeInto(LibraryManager.library, {
         stringToUTF8(platformPayload, buffer, bufferSize)
         return buffer
     },
+    
+    InstantGamesBridgeSendMessageToPlatform: function(message) {
+        window.sendMessageToPlatform(UTF8ToString(message))
+    },
 
 
     InstantGamesBridgeGetDeviceType: function() {
@@ -122,14 +126,6 @@ mergeInto(LibraryManager.library, {
         var bufferSize = lengthBytesUTF8(isBannerSupported) + 1
         var buffer = _malloc(bufferSize)
         stringToUTF8(isBannerSupported, buffer, bufferSize)
-        return buffer
-    },
-    
-    InstantGamesBridgeIsBannerShowing: function() {
-        var isBannerShowing = window.getIsBannerShowing()
-        var bufferSize = lengthBytesUTF8(isBannerShowing) + 1
-        var buffer = _malloc(bufferSize)
-        stringToUTF8(isBannerShowing, buffer, bufferSize)
         return buffer
     },
 

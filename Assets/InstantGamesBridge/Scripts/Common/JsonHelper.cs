@@ -35,7 +35,7 @@ namespace InstantGamesBridge.Common
                     continue;
                 }
 
-                if (i > 0 && i < platformDependedOptions.Length - 1)
+                if (i > 0 && i <= platformDependedOptions.Length - 1)
                 {
                     json += ", ";
                 }

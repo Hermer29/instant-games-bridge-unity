@@ -3,6 +3,7 @@
     public enum OptionsTargetPlatform
     {
         VK,
-        Yandex
+        Yandex,
+        CrazyGames
     }
 }

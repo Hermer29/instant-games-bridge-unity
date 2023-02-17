@@ -16,7 +16,27 @@ namespace InstantGamesBridge.Modules
 
         public string ToJson()
         {
-            return JsonUtility.ToJson(this).SurroundWithKey(_targetPlatform.ToString().ToLower());
+            var platform = "";
+
+            switch (_targetPlatform)
+            {
+                case OptionsTargetPlatform.VK:
+                    platform = "vk";
+                    break;
+
+                case OptionsTargetPlatform.Yandex:
+                    platform = "yandex";
+                    break;
+
+                case OptionsTargetPlatform.CrazyGames:
+                    platform = "crazy_games";
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+            return JsonUtility.ToJson(this).SurroundWithKey(platform);
         }
     }
 }

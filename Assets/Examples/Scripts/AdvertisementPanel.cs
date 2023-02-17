@@ -1,4 +1,5 @@
-﻿using InstantGamesBridge;
+﻿using System.Collections.Generic;
+using InstantGamesBridge;
 using InstantGamesBridge.Modules.Advertisement;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,14 +8,14 @@ namespace Examples
 {
     public class AdvertisementPanel : MonoBehaviour
     {
+        [SerializeField] private Text _bannerState;
+        
         [SerializeField] private Text _interstitialState;
 
         [SerializeField] private Text _rewardedState;
         
         [SerializeField] private Text _bannerSupported;
         
-        [SerializeField] private Text _bannerShowing;
-
         [SerializeField] private InputField _minimumDelayBetweenInterstitial;
 
         [SerializeField] private Button _setMinimumDelayBetweenInterstitialButton;
@@ -31,9 +32,16 @@ namespace Examples
 
         [SerializeField] private GameObject _overlay;
 
+        private readonly List<BannerState> _lastBannerStates = new();
+        
+        private readonly List<InterstitialState> _lastInterstitialStates = new();
+        
+        private readonly List<RewardedState> _lastRewardedStates = new();
+
 
         private void Start()
         {
+            Bridge.advertisement.bannerStateChanged += OnBannerStateChanged;
             Bridge.advertisement.interstitialStateChanged += OnInterstitialStateChanged;
             Bridge.advertisement.rewardedStateChanged += OnRewardedStateChanged;
             
@@ -44,8 +52,8 @@ namespace Examples
             _showRewardedButton.onClick.AddListener(OnShowRewardedButtonClicked);
 
             _bannerSupported.text = $"Is Banner Supported: { Bridge.advertisement.isBannerSupported }";
-            UpdateBannerShowing();
 
+            OnBannerStateChanged(Bridge.advertisement.bannerState);
             OnInterstitialStateChanged(Bridge.advertisement.interstitialState);
             OnRewardedStateChanged(Bridge.advertisement.rewardedState);
             UpdateMinimumDelayBetweenInterstitial();
@@ -55,20 +63,71 @@ namespace Examples
         {
             if (Bridge.instance != null)
             {
+                Bridge.advertisement.bannerStateChanged -= OnBannerStateChanged;
                 Bridge.advertisement.interstitialStateChanged -= OnInterstitialStateChanged;
                 Bridge.advertisement.rewardedStateChanged -= OnRewardedStateChanged;
             }
         }
 
+        
+        private void OnBannerStateChanged(BannerState state)
+        {
+            _lastBannerStates.Add(state);
+
+            if (_lastBannerStates.Count > 3)
+            {
+                _lastBannerStates.RemoveRange(0, _lastBannerStates.Count - 3);
+            }
+
+            _bannerState.text = $"Last Banner States: { string.Join(" → ", _lastBannerStates) }";
+        }
 
         private void OnInterstitialStateChanged(InterstitialState state)
         {
-            _interstitialState.text = $"Interstitial State: { state }";
+            switch (state)
+            {
+                case InterstitialState.Loading:
+                    _overlay.SetActive(true);
+                    break;
+
+                case InterstitialState.Closed:
+                case InterstitialState.Failed:
+                    _overlay.SetActive(false);
+                    break;
+            }
+            
+            _lastInterstitialStates.Add(state);
+
+            if (_lastInterstitialStates.Count > 3)
+            {
+                _lastInterstitialStates.RemoveRange(0, _lastInterstitialStates.Count - 3);
+            }
+
+            _interstitialState.text = $"Last Interstitial States: { string.Join(" → ", _lastInterstitialStates) }";
         }
 
         private void OnRewardedStateChanged(RewardedState state)
         {
-            _rewardedState.text = $"Rewarded State: { state }";
+            switch (state)
+            {
+                case RewardedState.Loading:
+                    _overlay.SetActive(true);
+                    break;
+
+                case RewardedState.Closed:
+                case RewardedState.Failed:
+                    _overlay.SetActive(false);
+                    break;
+            }
+            
+            _lastRewardedStates.Add(state);
+
+            if (_lastRewardedStates.Count > 3)
+            {
+                _lastRewardedStates.RemoveRange(0, _lastRewardedStates.Count - 3);
+            }
+
+            _rewardedState.text = $"Last Rewarded States: { string.Join(" → ", _lastRewardedStates) }";
         }
 
         private void OnSetMinimumDelayBetweenInterstitialButtonClicked()
@@ -80,64 +139,36 @@ namespace Examples
         
         private void OnShowBannerButtonClicked()
         {
-            _overlay.SetActive(true);
-            
-            Bridge.advertisement.ShowBanner(
-                success =>
-                {
-                    UpdateBannerShowing();
-                    _overlay.SetActive(false);
-                },
-                new ShowBannerVkOptions(VkBannerPosition.Bottom));
+            Bridge.advertisement.ShowBanner(new ShowBannerVkOptions(VkBannerPosition.Bottom));
         }
 
         private void OnHideBannerButtonClicked()
         {
-            _overlay.SetActive(true);
-            
-            Bridge.advertisement.HideBanner(
-                success =>
-                {
-                    UpdateBannerShowing();
-                    _overlay.SetActive(false);
-                });
+            Bridge.advertisement.HideBanner();
         }
 
         private void OnShowInterstitialButtonClicked()
         {
-            _overlay.SetActive(true);
-
             var ignoreDelay = _showInterstitialIgnoreDelayToggle.isOn;
 
             // Common variant
-            Bridge.advertisement.ShowInterstitial(
-                ignoreDelay,
-                success =>
-                {
-                    _overlay.SetActive(false);
-                });
+            Bridge.advertisement.ShowInterstitial(ignoreDelay);
 
             // Platform specific variant
             /*Bridge.advertisement.ShowInterstitial(
-                success => { _overlay.SetActive(false); },
                 new ShowInterstitialVkOptions(ignoreDelay),
-                new ShowInterstitialYandexOptions(ignoreDelay));*/
+                new ShowInterstitialYandexOptions(ignoreDelay),
+                new ShowInterstitialCrazyGamesOptions(ignoreDelay));*/
         }
 
         private void OnShowRewardedButtonClicked()
         {
-            _overlay.SetActive(true);
-            Bridge.advertisement.ShowRewarded(success => { _overlay.SetActive(false); });
+            Bridge.advertisement.ShowRewarded();
         }
 
         private void UpdateMinimumDelayBetweenInterstitial()
         {
             _minimumDelayBetweenInterstitial.text = Bridge.advertisement.minimumDelayBetweenInterstitial.ToString();
-        }
-
-        private void UpdateBannerShowing()
-        {
-            _bannerShowing.text = $"Is Banner Showing: { Bridge.advertisement.isBannerShowing }";
         }
     }
 }
