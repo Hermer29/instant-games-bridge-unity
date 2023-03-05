@@ -1,5 +1,4 @@
-﻿#if UNITY_WEBGL
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -62,6 +61,45 @@ namespace InstantGamesBridge.Modules.Storage
 #else
             return storageType == StorageType.LocalStorage;
 #endif
+        }
+
+        public async UniTask<string> Get(string key, StorageType? storageType = null)
+        {
+            var ended = false;
+            var faulted = false;
+            var result = (string)null;
+            
+            Action<bool, string> onComplete = (success, callbackResult) =>
+            {
+                faulted = success == false;
+                result = callbackResult;
+                ended = true;
+            };
+
+            Get(key, onComplete, storageType);
+            await UniTask.WaitWhile(() => ended == false);
+            if (faulted)
+                return UniTask<string>.FromException(new Exception("Bridge storage received error callback"));
+            
+            return UniTask<string>.FromResult(result);
+        }
+
+        public async UniTask Set(string key, string value, StorageType? storageType = null)
+        {
+            var ended = false;
+            var faulted = false;
+            
+            Action<bool> onComplete = (success) =>
+            {
+                faulted = success == false;
+                ended = true;
+            };
+
+            Set(key, value, onComplete, storageType);
+            await UniTask.WaitWhile(() => ended == false);
+            if (faulted)
+                return UniTask.FromException(new Exception("Bridge storage received error callback"));
+            return UniTask.CompletedTask;
         }
 
         public void Get(string key, Action<bool, string> onComplete, StorageType? storageType = null)
