@@ -1,4 +1,4 @@
-# Changes in my vesion:
+# Changes in my version:
 
 Added async versions of Storage operations (powered by UniTask) instead of callback based
 
