@@ -1,3 +1,7 @@
+# Changes in my version:
+
+Added async versions of Storage operations (powered by UniTask) instead of callback based
+
 # Instant Games Bridge
 Plugin of [InstantGamesBridge](https://github.com/mewtongames/instant-games-bridge) for Unity.
 
